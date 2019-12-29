@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'package:uptrip/screen/foods_of_restaurant_screen.dart';
 import '../screen/restaurant_detail_screen.dart';
 import '../provider/restaurant.dart';
@@ -19,12 +18,13 @@ class RestaurantItem extends StatelessWidget {
     // final order = Provider.of<Order>(context, listen: false);
 
     return GestureDetector(
-      onTap: () => Navigator.of(context).pushNamed(
+      onTap: () => 
+      Navigator.of(context).pushNamed(
           RestaurantDetailScreen.routeName,
           arguments: restaurant.id),
       child: GridTile(
         child: Image.asset(
-          'images/1.jpg',
+          'images/${restaurant.name}.jpg',
           fit: BoxFit.cover,
         ),
         footer: ClipRRect(

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../widgets/drawer.dart';
 import '../widgets/restaurant_detail.dart';
 // import 'package:uptrip/widgets/food_detail.dart';
 // import '../provider/foods.dart';
-import '../provider/order.dart';
-
+import '../provider/carts.dart';
+import '../screen/all_cart_screen.dart';
 // import './widgets/all_restaurant_grid.dart';
 import '../widgets/badge.dart';
 import './restaurant_overview_screen.dart';
@@ -20,43 +21,32 @@ class UpTripOpenScreen extends StatefulWidget {
 }
 
 class _UpTripOpenScreenState extends State<UpTripOpenScreen> {
-  int id = 0;
 
-  void changeLeftRestaurant() {
-    setState(() {
-      id += 1;
-    });
-  }
-
-  void changeRightRestaurant() {
-    setState(() {
-      id -= 1;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     // final food = Provider.of<Foods>(context);
     // final itemRestaurant = restaurant.item;
 
-    bool isFav = false;
-    return MaterialApp(
-        home: Scaffold(
+    bool isFav;
+      return Scaffold(
+        drawer: DrawerApp(),
       appBar: AppBar(
         title: Text('UpTrip'),
         backgroundColor: Theme.of(context).primaryColor,
         centerTitle: true,
         actions: <Widget>[
-          Consumer<Order>(
-            builder: (_, order, ch) => Badge(
+          Consumer<Cart>(
+            builder: (_, cart, ch) => Badge(
               child: ch,
-              value: order.totalNumber.toString(),
+              value: cart.totalNumber.toString(),
             ),
             child: IconButton(
               icon: Icon(
                 Icons.restaurant_menu,
               ),
-              onPressed: () => {},
+              onPressed: () => Navigator.of(context).pushNamed(AllCartScreen.routeName),
+              
             ),
           ),
           IconButton(
@@ -104,6 +94,6 @@ class _UpTripOpenScreenState extends State<UpTripOpenScreen> {
       // ),
 
       body: RestaurantDetailAlignment(context),
-    ));
+    );
   }
 }

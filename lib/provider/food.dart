@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 class Food with ChangeNotifier{
   String id;
   String restaurantId;

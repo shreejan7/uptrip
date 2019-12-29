@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import '../provider/order.dart';
+import '../provider/carts.dart';
 import 'package:provider/provider.dart';
 import '../widgets/all_restaurant_grid.dart';
 import '../widgets/badge.dart';
+import '../widgets/drawer.dart';
+
 
 class RestaurantOverviewScreen extends StatefulWidget {
   @override
@@ -21,19 +23,20 @@ class _RestaurantOverviewScreenState extends State<RestaurantOverviewScreen> {
 
   Widget build(BuildContext context) {
     var scaffold = Scaffold(
+      drawer: DrawerApp(),
       appBar: AppBar(
         title: Text('UpTrip'),
         actions: <Widget>[
-          Consumer<Order>(
-            builder: (_, order, ch) => Badge(
+          Consumer<Cart>(
+            builder: (_, cart, ch) => Badge(
               child: ch,
-              value: order.totalNumber.toString(),
+              value: cart.totalNumber.toString(),
             ),
             child: IconButton(
               icon: Icon(
                 Icons.restaurant_menu,
               ),
-              onPressed: () => {},
+          onPressed: () =>{}
             ),
           ),
           PopupMenuButton(

@@ -13,7 +13,7 @@ class Foods with ChangeNotifier {
           'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
     ),
     Food(
-      id: '1',
+      id: '2',
       restaurantId: '2',
       name: 'buff momo',
       price: 100,
@@ -22,8 +22,26 @@ class Foods with ChangeNotifier {
           'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
     ),
     Food(
-      id: '1',
+      id: '3',
       restaurantId: '2',
+      name: 'buff momo',
+      price: 150,
+      description: 'We serve momo that is hygenic',
+      imgUrl:
+          'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
+    ),
+    Food(
+      id: '1',
+      restaurantId: '3',
+      name: 'buff momo',
+      price: 170,
+      description: 'We serve momo that is hygenic',
+      imgUrl:
+          'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
+    ),
+    Food(
+      id: '2',
+      restaurantId: '3',
       name: 'buff momo',
       price: 100,
       description: 'We serve momo that is hygenic',
@@ -31,26 +49,8 @@ class Foods with ChangeNotifier {
           'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
     ),
     Food(
-      id: '1',
-      restaurantId: '2',
-      name: 'buff momo',
-      price: 100,
-      description: 'We serve momo that is hygenic',
-      imgUrl:
-          'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
-    ),
-    Food(
-      id: '1',
-      restaurantId: '2',
-      name: 'buff momo',
-      price: 100,
-      description: 'We serve momo that is hygenic',
-      imgUrl:
-          'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
-    ),
-    Food(
-      id: '1',
-      restaurantId: '2',
+      id: '3',
+      restaurantId: '3',
       name: 'buff momo',
       price: 100,
       description: 'We serve momo that is hygenic',
@@ -89,10 +89,13 @@ class Foods with ChangeNotifier {
   List<Food> get item {
     return [..._item];
   }
-  
-  List<Food> restaurantFood(String restaurantId){
-    return [..._item].where((food)=>food.restaurantId==restaurantId).toList();
+
+  List<Food> restaurantFood(String restaurantId) {
+    return [..._item]
+        .where((food) => food.restaurantId == restaurantId)
+        .toList();
   }
+
   void addFood() {
     notifyListeners();
   }

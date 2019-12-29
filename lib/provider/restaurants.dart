@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
 import './restaurant.dart';
 
 class Restaurants with ChangeNotifier {
   List<Restaurant> _item = [
     Restaurant(
-      id: '1',
-      name: 'lahana',
+      id: '2',
+      name: 'Lahana',
       description:
           'This is a newari restaurant. This is a newari restaurant. This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.',
       location: "Kalanki",
@@ -14,7 +13,7 @@ class Restaurants with ChangeNotifier {
           'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
     ),
     Restaurant(
-      id: '2',
+      id: '3',
       name: 'Sasa',
       description: 'This is a newari restaurant',
       location: "Kalanki",
@@ -22,7 +21,7 @@ class Restaurants with ChangeNotifier {
           'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
     ),
     Restaurant(
-      id: '3',
+      id: '32',
       name: 'Sasa3',
       description: 'This is a newari restaurant',
       location: "Kalanki",
@@ -30,7 +29,7 @@ class Restaurants with ChangeNotifier {
           'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
     ),
     Restaurant(
-      id: '4',
+      id: '44',
       name: 'Sasa4',
       description: 'This is a newari restaurant',
       location: "Kalanki",
@@ -38,7 +37,7 @@ class Restaurants with ChangeNotifier {
           'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
     ),
     Restaurant(
-      id: '5',
+      id: '50',
       name: 'Sasa5',
       description: 'This is a newari restaurant',
       location: "Kalanki",
@@ -46,7 +45,7 @@ class Restaurants with ChangeNotifier {
           'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
     ),
     Restaurant(
-      id: '5',
+      id: '58',
       name: 'Sasa5',
       description: 'This is a newari restaurant',
       location: "Kalanki",
@@ -54,7 +53,7 @@ class Restaurants with ChangeNotifier {
           'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
     ),
     Restaurant(
-      id: '5',
+      id: '54',
       name: 'Sasa5',
       description: 'This is a newari restaurant',
       location: "Kalanki",
@@ -62,7 +61,7 @@ class Restaurants with ChangeNotifier {
           'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
     ),
     Restaurant(
-      id: '5',
+      id: '65',
       name: 'Sasa5',
       description: 'This is a newari restaurant',
       location: "Kalanki",
@@ -91,7 +90,7 @@ class Restaurants with ChangeNotifier {
   Restaurant findById(String id) {
     return _item.firstWhere((pro) => pro.id == id);
   }
-
+ 
   void addRestaurant() {
     notifyListeners();
   }

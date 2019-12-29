@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uptrip/provider/order.dart';
-import 'package:uptrip/provider/restaurants.dart';
-import 'package:uptrip/screen/foods_of_restaurant_screen.dart';
-import 'package:uptrip/screen/restaurant_detail_screen.dart';
-import 'package:uptrip/screen/uptrip_open_screen.dart';
+import './provider/carts.dart';
+import './provider/restaurants.dart';
+import './screen/foods_of_restaurant_screen.dart';
+import './screen/restaurant_detail_screen.dart';
+import './screen/uptrip_open_screen.dart';
 import './provider/foods.dart';
-
+import './screen/all_cart_screen.dart';
+import './screen/order_screen.dart';
 
 void main() => runApp(UpTrip());
 class UpTrip extends StatelessWidget {
@@ -21,9 +23,13 @@ class UpTrip extends StatelessWidget {
           ),
           ChangeNotifierProvider.value(
               value: Restaurants(),
-          ),ChangeNotifierProvider.value(
-            value: Order(),
           ),
+          ChangeNotifierProvider.value(
+              value: Cart(),
+          ),
+          ChangeNotifierProvider.value(
+            value: Order(),
+          )
           // ChangeNotifierProvider.value(
           //   value: Food(),
           // ),
@@ -39,7 +45,8 @@ class UpTrip extends StatelessWidget {
             routes: {
               RestaurantDetailScreen.routeName:(ctx)=> RestaurantDetailScreen(),
               FoodsOfRestaurantScreen.routeName:(ctx)=>FoodsOfRestaurantScreen(),
-
+              AllCartScreen.routeName:(_)=>AllCartScreen(),
+              OrderScreen.routeName:(_)=>OrderScreen(),
             },
             
           ),

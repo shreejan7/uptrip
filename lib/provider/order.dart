@@ -1,50 +1,36 @@
 import 'package:flutter/foundation.dart';
+import 'package:uptrip/provider/carts.dart';
 
 class OrderItem with ChangeNotifier {
-  String id;
-  String name;
-  double price;
-  int quantity;
+  final String id;
+  final double amount;
+  final List<CartItem> foodOrder;
+  final DateTime dateTime;
 
   OrderItem({
     @required this.id,
-    @required this.name,
-    @required this.price,
-    @required this.quantity,
+    @required this.amount,
+    @required this.foodOrder,
+    @required this.dateTime,
   });
 }
 
 class Order with ChangeNotifier {
-  Map<String, OrderItem> _item = {};
+  List<OrderItem> _orderRegister = [];
 
-  Map<String, OrderItem> get item {
-    return {..._item};
+  List<OrderItem> get item {
+    return [..._orderRegister];
   }
 
-  int get totalNumber {
-    return _item.length;
-  }
-
-  void addItem(String foodId, String name, double price) {
-    if (_item.containsKey(foodId)) {
-      _item.update(
-          foodId,
-          (existingOrder) => OrderItem(
-                id: existingOrder.id,
-                name: existingOrder.name,
-                price: existingOrder.price,
-                quantity: existingOrder.quantity + 1,
-              ));
-    } else {
-      _item.putIfAbsent(
-          foodId,
-          () => OrderItem(
-                id: DateTime.now().toString(),
-                name: name,
-                price: price,
-                quantity: 1,
-              ));
-    }
-    notifyListeners();
+  void addItem(List<CartItem> foodOrder, double total) {
+    _orderRegister.insert(
+        0,
+        OrderItem(
+          id: DateTime.now().toString(),
+          amount: total,
+          foodOrder: foodOrder,
+          dateTime: DateTime.now(),
+        ));
+        notifyListeners();
   }
 }
