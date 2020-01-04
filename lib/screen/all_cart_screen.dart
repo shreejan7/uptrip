@@ -15,7 +15,7 @@ class AllCartScreen extends StatefulWidget {
 class _AllCartScreenState extends State<AllCartScreen> {
   @override
   Widget build(BuildContext context) {
-    final cart = Provider.of<Cart>(context);
+     Provider.of<Cart>(context ,listen: false);
     bool _order = false;
 
     // final cart=Provider.of<Cart>(context);

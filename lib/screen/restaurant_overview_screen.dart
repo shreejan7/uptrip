@@ -18,7 +18,7 @@ enum favorite {
 }
 
 class _RestaurantOverviewScreenState extends State<RestaurantOverviewScreen> {
-  @override
+  
   bool isFav = false;
 
   Widget build(BuildContext context) {

@@ -45,9 +45,9 @@ class FoodItem extends StatelessWidget {
                   Icons.restaurant_menu,
                   color: Theme.of(context).accentColor,
                 ),
-                onPressed: () => {
-                      cart.addItem(food.id, food.name, food.price),
-                      Scaffold.of(context).removeCurrentSnackBar(),
+                onPressed: () {
+                      cart.addItem(food.id, food.name, food.price);
+                      Scaffold.of(context).removeCurrentSnackBar();
                       Scaffold.of(context).showSnackBar(SnackBar(
                         content: Text('${food.name} added to cart'),
                         duration: Duration(seconds: 2,),
@@ -57,7 +57,7 @@ class FoodItem extends StatelessWidget {
                             cart.removeSingleItem(food.id);
                           },
                         ),
-                      ))
+                      ));
                     }),
           ),
         ),

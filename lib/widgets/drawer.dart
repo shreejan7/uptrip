@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:uptrip/screen/food_item_screen.dart';
 import '../screen/order_screen.dart';
+import '../screen/restaurant_entry_screen.dart';
 
 class DrawerApp extends StatelessWidget {
   @override
@@ -23,12 +25,16 @@ class DrawerApp extends StatelessWidget {
           ),
           Divider(),
           ListTile(
-            leading: Icon(
-              Icons.payment
-            ),
+            leading: Icon(Icons.payment),
             title: Text('Payment'),
             onTap: () => Navigator.of(context).pushNamed(OrderScreen.routeName),
-          )
+          ),
+          Divider(),
+        ListTile(
+            leading: Icon(Icons.add),
+            title: Text('Restaurant'),
+            onTap: () => Navigator.of(context).pushNamed(RestaurantEntryScreen.routeName),
+          ),
         ],
       ),
     );

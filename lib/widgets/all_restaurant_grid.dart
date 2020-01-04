@@ -4,8 +4,8 @@ import '../provider/restaurants.dart';
 import 'package:provider/provider.dart';
 
 class AllRestaurantGrid extends StatelessWidget {
-  @override
   final bool isFav;
+  @override
   AllRestaurantGrid(this.isFav);
   Widget build(BuildContext context) {
     final restaurantData = Provider.of<Restaurants>(context);

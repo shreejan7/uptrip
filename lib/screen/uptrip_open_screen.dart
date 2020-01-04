@@ -9,6 +9,7 @@ import '../screen/all_cart_screen.dart';
 // import './widgets/all_restaurant_grid.dart';
 import '../widgets/badge.dart';
 import './restaurant_overview_screen.dart';
+import '../provider/restaurants.dart';
 
 enum favorite {
   seeAll,
@@ -21,7 +22,20 @@ class UpTripOpenScreen extends StatefulWidget {
 }
 
 class _UpTripOpenScreenState extends State<UpTripOpenScreen> {
+  bool isTrue = true;
+  bool isLoaded = true;
 
+  @override
+  void didChangeDependencies() {
+    if (isTrue)
+      Provider.of<Restaurants>(context).fetchAndSetRestaurantData().then((_) {
+        setState(() {
+          isLoaded = false;
+        });
+      });
+    super.didChangeDependencies();
+    isTrue = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +43,8 @@ class _UpTripOpenScreenState extends State<UpTripOpenScreen> {
     // final itemRestaurant = restaurant.item;
 
     bool isFav;
-      return Scaffold(
-        drawer: DrawerApp(),
+    return Scaffold(
+      drawer: DrawerApp(),
       appBar: AppBar(
         title: Text('UpTrip'),
         backgroundColor: Theme.of(context).primaryColor,
@@ -45,8 +59,8 @@ class _UpTripOpenScreenState extends State<UpTripOpenScreen> {
               icon: Icon(
                 Icons.restaurant_menu,
               ),
-              onPressed: () => Navigator.of(context).pushNamed(AllCartScreen.routeName),
-              
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(AllCartScreen.routeName),
             ),
           ),
           IconButton(
@@ -93,7 +107,11 @@ class _UpTripOpenScreenState extends State<UpTripOpenScreen> {
       //   ),
       // ),
 
-      body: RestaurantDetailAlignment(context),
+      body: isLoaded
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : RestaurantDetailAlignment(context),
     );
   }
 }

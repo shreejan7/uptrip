@@ -18,8 +18,7 @@ class RestaurantItem extends StatelessWidget {
     // final order = Provider.of<Order>(context, listen: false);
 
     return GestureDetector(
-      onTap: () => 
-      Navigator.of(context).pushNamed(
+      onTap: () => Navigator.of(context).pushNamed(
           RestaurantDetailScreen.routeName,
           arguments: restaurant.id),
       child: GridTile(
@@ -56,7 +55,10 @@ class RestaurantItem extends StatelessWidget {
               ),
               onPressed: () =>
                   // order.addItem(restaurant.id, restaurant.name, 300),
-                  Navigator.of(context).pushNamed(FoodsOfRestaurantScreen.routeName,arguments: restaurant.id),
+                  Navigator.of(context).pushNamed(
+                FoodsOfRestaurantScreen.routeName,
+                arguments: restaurant.id,
+              ),
             ),
           ),
         ),

@@ -13,9 +13,9 @@ class OrderItem extends StatefulWidget {
 }
 
 class _OrderItemState extends State<OrderItem> {
-  @override
   var _expand = false;
 
+  @override
   Widget build(BuildContext context) {
     return Card(
         margin: EdgeInsets.symmetric(
