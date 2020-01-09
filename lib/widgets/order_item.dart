@@ -42,8 +42,9 @@ class _OrderItemState extends State<OrderItem> {
             ),
             if (_expand)
               Container(
-                height: min(widget.order.foodOrder.length * 20.0 + 10, 100),
+                height: min(widget.order.foodOrder.length * 20.0 + 100, 180),
                 child: ListView.builder(
+                  padding: EdgeInsets.all(8),
                   itemCount: widget.order.foodOrder.length,
                   itemBuilder: (ctx, i) => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -51,7 +52,7 @@ class _OrderItemState extends State<OrderItem> {
                       Text(
                         widget.order.foodOrder[i].name,
                         style: TextStyle(
-                          color: Theme.of(context).primaryColor,
+                          // color: Theme.of(context).primaryColor,
                           fontWeight: FontWeight.bold,
                           fontSize: 23,
                         ),

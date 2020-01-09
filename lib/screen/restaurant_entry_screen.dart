@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../widgets/input_location.dart';
+import 'package:location/location.dart';
 import '../provider/restaurant.dart';
 import '../provider/restaurants.dart';
+import '../widgets/image_input.dart';
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class RestaurantEntryScreen extends StatefulWidget {
   static const routeName = 'restaurant-entry-screen';
@@ -11,24 +16,69 @@ class RestaurantEntryScreen extends StatefulWidget {
 }
 
 class _RestaurantEntryScreenState extends State<RestaurantEntryScreen> {
+  bool _isLoading = false;
+  File _image;
+  double latitude;
+  double longitude;
   final key = GlobalKey<FormState>();
   var _restaurant = new Restaurant(
     id: '',
     name: '',
     description: '',
-    location: 'kalanki',
+    locationLatitude: 0.0,
+    locationLongitude: 0.0,
     imgUrl: '',
   );
-  void save() {
-    // if (key.currentState.validate()) return;
+    Future<void> inputUserLocation() async{
+    final locationData = await Location().getLocation();
+    print(locationData.latitude);
+    print(locationData.longitude);
+    latitude = locationData.latitude;
+    longitude = locationData.longitude;
+
+  }
+  Future<void> save() async {
+    setState(() {
+      _isLoading = true;
+    });
     key.currentState.save();
     final restaurantData = Provider.of<Restaurants>(context);
-    restaurantData.addRestaurant(_restaurant);
+    final FirebaseStorage _storage =
+        FirebaseStorage(storageBucket: 'gs://uptrip-cef8f.appspot.com');
+    String filepath = 'restaurants/${_restaurant.name}.jpg';
+    StorageUploadTask _uploadTask;
+    setState(() {
+      _uploadTask = _storage.ref().child(filepath).putFile(_image);
+    });
+    await _uploadTask.onComplete;
+    _storage.ref().child(filepath).getDownloadURL().then((url) {
+      _restaurant = new Restaurant(
+        id: _restaurant.id,
+        name: _restaurant.name,
+        description: _restaurant.description,
+        locationLatitude:latitude,
+        locationLongitude: longitude,
+        imgUrl: url,
+      );
+      restaurantData.addRestaurant(_restaurant);
       Navigator.of(context).pop();
-    }
-
+    });
+  }
 
   final _nameFocus = FocusNode();
+  final _descriptionFocus = FocusNode();
+
+  void dispose() {
+    _nameFocus.dispose();
+    _descriptionFocus.dispose();
+    super.dispose();
+  }
+
+  void _imageInput(File image) {
+    setState(() {
+      _image = image;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +92,19 @@ class _RestaurantEntryScreenState extends State<RestaurantEntryScreen> {
           ),
         ],
       ),
-      body: Padding(
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Padding(
               padding: EdgeInsets.all(8),
               child: Form(
                 key: key,
                 child: ListView(
                   children: <Widget>[
+                    SizedBox(
+                      height: 30,
+                    ),
                     TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Resataurant Name',
@@ -68,10 +125,14 @@ class _RestaurantEntryScreenState extends State<RestaurantEntryScreen> {
                           id: _restaurant.id,
                           name: value,
                           description: _restaurant.description,
-                          location: _restaurant.location,
+                          locationLatitude: _restaurant.locationLatitude,
+                          locationLongitude: _restaurant.locationLongitude,
                           imgUrl: _restaurant.imgUrl,
                         );
                       },
+                    ),
+                    SizedBox(
+                      height: 30,
                     ),
                     TextFormField(
                       decoration: InputDecoration(
@@ -84,18 +145,27 @@ class _RestaurantEntryScreenState extends State<RestaurantEntryScreen> {
                         else
                           return null;
                       },
-                      maxLines: 5,
+                      maxLines: 9,
                       focusNode: _nameFocus,
+                      onFieldSubmitted: (val) {
+                        FocusScope.of(context).nextFocus();
+                      },
                       onSaved: (value) {
                         _restaurant = new Restaurant(
                           id: _restaurant.id,
                           name: _restaurant.name,
                           description: value,
-                          location: _restaurant.location,
+                          locationLatitude: _restaurant.locationLatitude,
+                          locationLongitude: _restaurant.locationLongitude,
                           imgUrl: _restaurant.imgUrl,
                         );
                       },
-                    )
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    ImageInput(_imageInput),
+                    InputLocation(inputUserLocation),
                   ],
                 ),
               ),

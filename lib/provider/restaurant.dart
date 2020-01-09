@@ -5,7 +5,8 @@ class Restaurant with ChangeNotifier  {
   final String id;
   final String name;
   final String description;
-  final String location;
+  final double locationLatitude;
+  final double locationLongitude;
   final String imgUrl;
   bool isFavourite;
 
@@ -13,7 +14,8 @@ class Restaurant with ChangeNotifier  {
     @required this.id,
     @required this.name,
     @required this.description,
-    @required this.location,
+    @required this.locationLatitude,
+    @required this.locationLongitude,
     @required this.imgUrl,
     this.isFavourite= false,
   });

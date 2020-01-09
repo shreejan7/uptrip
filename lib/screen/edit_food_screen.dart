@@ -23,7 +23,7 @@ class _EditFoodScreenState extends State<EditFoodScreen> {
         'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
     price: null,
   );
- 
+
   var forEdit = true;
   bool isSubmit = false;
   @override
@@ -32,8 +32,7 @@ class _EditFoodScreenState extends State<EditFoodScreen> {
       final foodId = ModalRoute.of(context).settings.arguments as String;
 
       if (foodId != null) {
-         _food = Provider.of<Foods>(context, listen: false).findById(foodId);
-        
+        _food = Provider.of<Foods>(context, listen: false).findById(foodId);
       }
       forEdit = false;
     }
@@ -152,6 +151,9 @@ class _EditFoodScreenState extends State<EditFoodScreen> {
                             'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
                         price: _food.price,
                       ),
+                    ),
+                    SizedBox(
+                      height: 20,
                     ),
                   ],
                 ),

@@ -1,7 +1,11 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:uptrip/provider/food.dart';
+import 'package:uptrip/widgets/image_input.dart';
 import '../provider/foods.dart';
 
 class AddFoodScreen extends StatefulWidget {
@@ -19,11 +23,10 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
     name: '',
     description: '',
     restaurantId: '',
-    imgUrl:
-        'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
+    imgUrl: '',
     price: null,
   );
-  String _initValue ;
+  String _initValue;
   var forEdit = true;
   bool forEditChange = false;
   bool isSubmit = false;
@@ -37,31 +40,54 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
     super.didChangeDependencies();
   }
 
-  void _save() {
+  File _image;
+  Future<void> _save() async {
+    final food = Provider.of<Foods>(context, listen: false);
+
     isSubmit = true;
     final isValidate = _form.currentState.validate();
     if (!isValidate) return;
     _form.currentState.save();
-    final food = Provider.of<Foods>(context, listen: false);
 
-    food.addFood(_food).catchError((error) {
-      showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-                title: Text('An error has occured!'),
-                content: Text('Something went wrong'),
-                actions: <Widget>[
-                  FlatButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text('Ok'),
-                  )
-                ],
-              ));
-    }).then((_) {
-      setState(() {
-        isSubmit = true;
+    final FirebaseStorage _storage =
+        FirebaseStorage(storageBucket: 'gs://uptrip-cef8f.appspot.com');
+    String filepath = 'foods/${_food.name}.jpg';
+  
+    StorageUploadTask _uploadTask ;
+    setState(() {
+         _uploadTask = _storage.ref().child(filepath).putFile(_image);
+     
+    });
+    await _uploadTask.onComplete;
+    _storage.ref().child(filepath).getDownloadURL().then((url) {
+      _food = Food(
+        id: _food.id,
+        restaurantId: _food.restaurantId,
+        isFavourite: _food.isFavourite,
+        name: _food.name,
+        description: _food.description,
+        imgUrl: url,
+        price: _food.price,
+      );
+      food.addFood(_food).catchError((error) {
+        showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+                  title: Text('An error has occured!'),
+                  content: Text('Something went wrong'),
+                  actions: <Widget>[
+                    FlatButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text('Ok'),
+                    )
+                  ],
+                ));
+      }).then((_) {
+        setState(() {
+          isSubmit = true;
+        });
+        Navigator.of(context).pop();
       });
-      Navigator.of(context).pop();
     });
   }
 
@@ -69,6 +95,12 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
     _priceFocusNode.dispose();
     _descriptionFocusNode.dispose();
     super.dispose();
+  }
+
+  void _imageInput(File image) {
+    setState(() {
+      _image = image;
+    });
   }
 
   Widget build(BuildContext context) {
@@ -93,7 +125,6 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                 child: ListView(
                   children: <Widget>[
                     TextFormField(
-        
                       decoration: InputDecoration(
                         labelText: 'Title',
                       ),
@@ -112,11 +143,11 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                         id: _food.id,
                         restaurantId: _initValue,
                         isFavourite: _food.isFavourite,
-                        imgUrl:
-                            'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
+                        imgUrl: _food.imgUrl,
                         price: _food.price,
                       ),
                     ),
+                    SizedBox(height: 30,),
                     TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Price',
@@ -138,29 +169,34 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                         id: _food.id,
                         restaurantId: _food.restaurantId,
                         isFavourite: _food.isFavourite,
-                        imgUrl:
-                            'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
+                        imgUrl: _food.imgUrl,
                         price: double.parse(v),
                       ),
                     ),
+                    SizedBox(height: 30,),
                     TextFormField(
+                      textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                         labelText: 'Description',
                       ),
                       maxLines: 5,
-                      keyboardType: TextInputType.multiline,
+                      // keyboardType: TextInputType.text,
                       focusNode: _descriptionFocusNode,
+                      onFieldSubmitted: (v){
+                        FocusScope.of(context).nextFocus();
+                      },
                       onSaved: (v) => _food = Food(
                         id: _food.id,
                         restaurantId: _food.restaurantId,
                         isFavourite: _food.isFavourite,
                         name: _food.name,
                         description: v,
-                        imgUrl:
-                            'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
+                        imgUrl: _food.imgUrl,
                         price: _food.price,
                       ),
                     ),
+                    SizedBox(height: 30,),
+                    ImageInput(_imageInput),
                   ],
                 ),
               ),

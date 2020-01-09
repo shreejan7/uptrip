@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:uptrip/models/httperror_delete.dart';
 import './food.dart';
 import 'package:http/http.dart' as http;
 
@@ -89,7 +90,7 @@ class Foods with ChangeNotifier {
     //       'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
     // ),
   ];
-
+  List<Food> temp =[];
   List<Food> get item {
     return [..._item];
   }
@@ -105,8 +106,11 @@ class Foods with ChangeNotifier {
     print('executed');
     try {
       final foodData = await http.get(url);
+      
       print(json.decode(foodData.body));
       final value = json.decode(foodData.body) as Map<String, dynamic>;
+      if(value.isEmpty)
+        return;
       value.forEach((id, value) {
         _item.add(
           new Food(
@@ -152,9 +156,22 @@ class Foods with ChangeNotifier {
     }
   }
 
-  void deleteFood(String id) {
-    _item.removeWhere((food) => food.id == id);
+  Future<void> deleteFood(String id) async{
+    final url = 'https://uptrip-cef8f.firebaseio.com/food/$id.json';
+    final foodIndex = _item.indexWhere((food)=>food.id == id);
+    var foodData= _item[foodIndex];
+    _item.removeAt(foodIndex);
     notifyListeners();
+    final val = await http.delete(url);
+
+         if (val.statusCode >= 400) {
+           print('Statuscode is '+val.statusCode.toString());
+           _item.insert(foodIndex, foodData);
+           notifyListeners();
+              throw HttpError('There is an error in the deletion process');
+         }
+        foodData = null;
+    
   }
 
   Food findById(String id) {

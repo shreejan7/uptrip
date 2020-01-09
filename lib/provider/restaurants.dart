@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import './restaurant.dart';
 import 'package:http/http.dart' as http;
@@ -73,7 +72,7 @@ class Restaurants with ChangeNotifier {
     //       'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
     // ),
   ];
-  
+
   List<Restaurant> get item {
     return [..._item];
   }
@@ -95,20 +94,19 @@ class Restaurants with ChangeNotifier {
     return _item.firstWhere((pro) => pro.id == id);
   }
 
-  void update(String id,Restaurant restaurantData){
-    final url='https://uptrip-cef8f.firebaseio.com/restaurant/$id.json';
-    http.patch(url,body:json.encode(
-        {
-          'id': restaurantData.id,
-                'name': restaurantData.name,
-                'description': restaurantData.description,
-                'location': restaurantData.location,
-                'imgUrl': restaurantData.imgUrl,
-                'isFavourite': restaurantData.isFavourite,
-
-        }
-    ));
+  void update(String id, Restaurant restaurantData) {
+    final url = 'https://uptrip-cef8f.firebaseio.com/restaurant/$id.json';
+    http.patch(url,
+        body: json.encode({
+          'name': restaurantData.name,
+          'description': restaurantData.description,
+          'locationLatitude': restaurantData.locationLatitude,
+          'locationLongitude': restaurantData.locationLongitude,
+          'imgUrl': restaurantData.imgUrl,
+          'isFavourite': restaurantData.isFavourite,
+        }));
   }
+
   void addRestaurant(Restaurant restaurantData) {
     http
         .post(url,
@@ -117,7 +115,8 @@ class Restaurants with ChangeNotifier {
                 'id': restaurantData.id,
                 'name': restaurantData.name,
                 'description': restaurantData.description,
-                'location': restaurantData.location,
+                'locationLatitude': restaurantData.locationLatitude,
+                'locationLongitude': restaurantData.locationLongitude,
                 'imgUrl': restaurantData.imgUrl,
                 'isFavourite': restaurantData.isFavourite,
               },
@@ -127,7 +126,8 @@ class Restaurants with ChangeNotifier {
         id: json.decode(response.body)['name'],
         description: restaurantData.description,
         name: restaurantData.name,
-        location: restaurantData.location,
+        locationLatitude: restaurantData.locationLatitude,
+        locationLongitude: restaurantData.locationLongitude,
         imgUrl: restaurantData.imgUrl,
         isFavourite: restaurantData.isFavourite,
       ));
@@ -137,25 +137,25 @@ class Restaurants with ChangeNotifier {
     });
   }
 
-  Future<void> fetchAndSetRestaurantData() async {
-    _item=[];
+  Future<void> fetchAndSetRestaurantData(double latitude,double longitude) async {
+    _item = [];
     try {
       final restaurantData = await http.get(url);
       print(json.decode(restaurantData.body));
       final eachData = json.decode(restaurantData.body) as Map<String, dynamic>;
-
+      if (eachData.isEmpty) return;
       eachData.forEach((id, eachData) {
         _item.add(
           new Restaurant(
             id: id,
             name: eachData['name'],
             description: eachData['description'],
-            location: eachData['location'],
+            locationLatitude: eachData['locationLatitude'],
+            locationLongitude: eachData['locationLongitude'],
             imgUrl: eachData['imgUrl'],
           ),
         );
-    notifyListeners();
-
+        notifyListeners();
       });
     } catch (error) {}
   }

@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:uptrip/screen/restaurant_dashboard.dart';
 import '../provider/restaurants.dart';
 import '../provider/restaurant.dart';
+import '../provider/foods.dart';
+import 'package:location/location.dart';
 import '../widgets/drawer.dart';
 
 import '../screen/foods_of_restaurant_screen.dart';
@@ -15,12 +17,20 @@ class RestaurantDetailScreen extends StatefulWidget {
 }
 
 class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
+  bool isLoaded = false;
+  double latitude;
+  double longitude;
   Future<void> _refersh() async {
-    await Provider.of<Restaurants>(context).fetchAndSetRestaurantData();
+    final locationData = await Location().getLocation();
+    latitude=locationData.latitude;
+    longitude=locationData.longitude;
+    await Provider.of<Restaurants>(context).fetchAndSetRestaurantData(latitude,longitude);
   }
 
   @override
   Widget build(BuildContext context) {
+    @override
+  
     Restaurant restaurant;
     final restaurantId = ModalRoute.of(context).settings.arguments as String;
     setState(() {
@@ -43,7 +53,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
             ),
           ],
         ),
-        body: RefreshIndicator(
+        body:isLoaded?Center(child: CircularProgressIndicator(),): RefreshIndicator(
           onRefresh: _refersh,
           child: ListView(
             children: <Widget>[
@@ -54,8 +64,8 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                     Card(
                       child: Stack(
                         children: <Widget>[
-                          Image.asset(
-                            'images/${restaurant.name}.jpg',
+                          Image.network(
+                            restaurant.imgUrl,
                             fit: BoxFit.fill,
                             height: MediaQuery.of(context).size.height * 0.36,
                             width: double.infinity,
@@ -146,7 +156,8 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                               ],
                             ),
                             Text(
-                              restaurant.location,
+                              restaurant.locationLatitude.toString()+
+                              restaurant.locationLongitude.toString(),
                             ),
                           ],
                         ),

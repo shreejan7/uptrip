@@ -6,7 +6,7 @@ import '../widgets/restaurant_detail.dart';
 // import '../provider/foods.dart';
 import '../provider/carts.dart';
 import '../screen/all_cart_screen.dart';
-// import './widgets/all_restaurant_grid.dart';
+import 'package:location/location.dart';
 import '../widgets/badge.dart';
 import './restaurant_overview_screen.dart';
 import '../provider/restaurants.dart';
@@ -22,17 +22,40 @@ class UpTripOpenScreen extends StatefulWidget {
 }
 
 class _UpTripOpenScreenState extends State<UpTripOpenScreen> {
+  double latitude;
+  double longitude;
   bool isTrue = true;
   bool isLoaded = true;
+  bool loading = true;
+ Future<void> inputUserLocation() async{
 
+    final locationData = await Location().getLocation();
+    latitude=locationData.latitude;
+    longitude=locationData.longitude;
+    setState(() {
+   loading = false;
+      
+    });
+
+  }
   @override
-  void didChangeDependencies() {
-    if (isTrue)
-      Provider.of<Restaurants>(context).fetchAndSetRestaurantData().then((_) {
+  void initState() {
+    // TODO: implement initState
+    setState(() {
+    inputUserLocation();
+    
+    });
+    Provider.of<Restaurants>(context,listen: false).fetchAndSetRestaurantData(latitude,longitude).then((_) {
         setState(() {
           isLoaded = false;
         });
       });
+    super.initState();
+  }
+  @override
+  void didChangeDependencies() {
+    if (isTrue)
+      
     super.didChangeDependencies();
     isTrue = false;
   }
@@ -111,7 +134,11 @@ class _UpTripOpenScreenState extends State<UpTripOpenScreen> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : RestaurantDetailAlignment(context),
+         : loading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+         :RestaurantDetailAlignment(context),
     );
   }
 }

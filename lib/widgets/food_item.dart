@@ -16,8 +16,8 @@ class FoodItem extends StatelessWidget {
     final cart = Provider.of<Cart>(context, listen: false);
     return Container(
       child: GridTile(
-        child: Image.asset(
-          'images/1.jpg',
+        child: Image.network(
+          food.imgUrl,
           fit: BoxFit.cover,
         ),
         footer: ClipRRect(

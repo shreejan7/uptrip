@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../provider/restaurants.dart';
 import '../screen/foods_of_restaurant_screen.dart';
 import '../screen/restaurant_detail_screen.dart';
+// import '../provider/foods.dart';
 
 class RestaurantCardAlignment extends StatelessWidget {
   final int cardNum;
@@ -33,7 +34,7 @@ class RestaurantCardAlignment extends StatelessWidget {
             new SizedBox.expand(
               child: new Material(
                 borderRadius: new BorderRadius.circular(12.0),
-                child: new Image.asset('images/${restaurantItem[cardNum].name}.jpg', fit: BoxFit.cover),
+                child: new Image.network(restaurantItem[cardNum].imgUrl, fit: BoxFit.cover),
                 
               ),
             ),
@@ -80,8 +81,8 @@ class RestaurantCardAlignment extends StatelessWidget {
                   color: Theme.of(context).accentColor,
                 ),
                 onPressed: () =>
-                    // order.addItem(restaurant.id, restaurant.name, 300),
                     Navigator.of(context).pushNamed(FoodsOfRestaurantScreen.routeName,arguments: restaurantItem[cardNum].id),
+                
               ),
             ),
           ),

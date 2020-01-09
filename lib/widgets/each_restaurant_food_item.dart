@@ -11,6 +11,7 @@ class EachRestaurantFoodItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scaffold =Scaffold.of(context);
     final foodData = Provider.of<Foods>(context,listen: false,);
     return Column(
       children: <Widget>[
@@ -41,7 +42,13 @@ class EachRestaurantFoodItem extends StatelessWidget {
                         content:Text('Are you sure'),
                         action: SnackBarAction(
                           label: 'Yes',
-                          onPressed:()=> foodData.deleteFood(id),
+                          onPressed:() async{try {
+                            await foodData.deleteFood(id).then((onValue){
+                               scaffold.showSnackBar((SnackBar(content: Text('Successfully deleted data',textAlign: TextAlign.center,),)));
+                            });
+                          } catch (e) {
+                            scaffold.showSnackBar((SnackBar(content: Text('Could not delete data',textAlign: TextAlign.center,),)));
+                          } }
                         ),
                        ),);
                     },
