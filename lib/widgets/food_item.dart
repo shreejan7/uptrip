@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../provider/food.dart';
 import '../provider/carts.dart';
+import '../provider/auth_user.dart';
+import '../screen/auth_screen.dart';
 
 class FoodItem extends StatelessWidget {
   // final String id;
@@ -10,8 +12,30 @@ class FoodItem extends StatelessWidget {
 
   // foodItem(this.id, this.name, this.imgUrl);
 
+  void _notAuth(BuildContext context){
+    showDialog(
+      context: context,
+      builder: (ctx)=>AlertDialog(
+        title: Text("You are not logged in."),
+        content: Text("Login to order"),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Login'),
+            onPressed: ()=>Navigator.of(context).pushNamed(AuthScreen.routeName),
+          ),
+          FlatButton(
+            child: Text('Cancel'),
+            onPressed: ()=>Navigator.of(context).pop(),
+          )
+        ],
+      )
+    );
+
+  }
   @override
   Widget build(BuildContext context) {
+    final isAuth = Provider.of<AuthUser>(context).isAuth;
+
     final food = Provider.of<Food>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
     return Container(
@@ -27,7 +51,7 @@ class FoodItem extends StatelessWidget {
             leading: Consumer<Food>(
               builder: (ctx, food, _) => IconButton(
                 icon: Icon(
-                  food.isFavourite ? Icons.favorite : Icons.favorite_border,
+                  food.isFavourite?Icons.favorite:Icons.favorite_border,
                   color: Theme.of(context).accentColor,
                 ),
                 onPressed: () => food.isfav(),
@@ -46,7 +70,7 @@ class FoodItem extends StatelessWidget {
                   color: Theme.of(context).accentColor,
                 ),
                 onPressed: () {
-                      cart.addItem(food.id, food.name, food.price);
+                  cart.addItem(food.id, food.name, food.price,food.imgUrl);
                       Scaffold.of(context).removeCurrentSnackBar();
                       Scaffold.of(context).showSnackBar(SnackBar(
                         content: Text('${food.name} added to cart'),
@@ -58,6 +82,7 @@ class FoodItem extends StatelessWidget {
                           },
                         ),
                       ));
+                      
                     }),
           ),
         ),

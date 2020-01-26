@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../provider/restaurants.dart';
+import '../provider/restaurantData.dart';
 import '../screen/foods_of_restaurant_screen.dart';
 import '../screen/restaurant_detail_screen.dart';
+
+
 // import '../provider/foods.dart';
 
 class RestaurantCardAlignment extends StatelessWidget {
@@ -12,8 +14,9 @@ class RestaurantCardAlignment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final restaurant = Provider.of<Restaurants>(context, listen: false);
+    final restaurant = Provider.of<RestaurantData>(context, listen: false);
     final restaurantItem = restaurant.item;
+    print("This is res name "+restaurantItem[1].name.toString());
     
     // if (isFav == true) {
     //   print(cardNum);
@@ -25,7 +28,7 @@ class RestaurantCardAlignment extends StatelessWidget {
     return GestureDetector(
        onTap: () => Navigator.of(context).pushNamed(
                   RestaurantDetailScreen.routeName,
-                  arguments: restaurantItem[cardNum].id,
+                  arguments: restaurantItem[cardNum],
                   
                 ),
           child: new Card(
@@ -51,25 +54,28 @@ class RestaurantCardAlignment extends StatelessWidget {
               alignment: Alignment.bottomLeft,
               child: new Container(
                   padding:
-                      new EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-                  child: Consumer<Restaurants>(
+                      new EdgeInsets.symmetric(vertical: 32.0, horizontal: 16.0),
+                  child: Consumer<RestaurantData>(
                     builder: (_, ctx, ch) => ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: GridTileBar(
               backgroundColor: Colors.black26,
-              leading: Consumer<Restaurants>(
-                builder: (ctx, restaurant, _) => IconButton(
-                  icon: Icon(
-                    restaurantItem[cardNum].isFavourite
-                        ? Icons.favorite
-                        : Icons.favorite_border,
-                    color: Theme.of(context).accentColor,
-                  ),
-                  onPressed: () => restaurantItem[cardNum].isfav(),
-                ),
-              ),
+              // leading: Consumer<Restaurants>(
+              //   builder: (ctx, restaurant, _) => IconButton(
+              //     icon: Icon(
+              //       restaurantItem[cardNum].isFavourite
+              //           ? Icons.favorite
+              //           : Icons.favorite_border,
+              //       color: Theme.of(context).accentColor,
+              //     ),
+              //     onPressed: () {
+              //       set
+              //     }
+              //   ),
+              // ),
               title: Text(
                restaurantItem[cardNum].name,
+              // 'vdsfds',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
@@ -81,7 +87,7 @@ class RestaurantCardAlignment extends StatelessWidget {
                   color: Theme.of(context).accentColor,
                 ),
                 onPressed: () =>
-                    Navigator.of(context).pushNamed(FoodsOfRestaurantScreen.routeName,arguments: restaurantItem[cardNum].id),
+                    Navigator.of(context).pushNamed(FoodsOfRestaurantScreen.routeName,arguments: restaurantItem[cardNum]),
                 
               ),
             ),

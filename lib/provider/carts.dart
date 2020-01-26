@@ -5,12 +5,14 @@ class CartItem with ChangeNotifier {
   String name;
   double price;
   int quantity;
+  String imgUrl;
 
   CartItem({
     @required this.id,
     @required this.name,
     @required this.price,
     @required this.quantity,
+    @required this.imgUrl,
   });
 }
 
@@ -24,6 +26,7 @@ class Cart with ChangeNotifier {
   int get totalNumber {
     return _item.length;
   }
+
   double get totalPrice{
     var total = 0.0;
     _item.forEach((key,cartItem)=>
@@ -37,7 +40,7 @@ class Cart with ChangeNotifier {
      }
     notifyListeners();
    }
-  void addItem(String foodId, String name, double price) {
+  void addItem(String foodId, String name, double price,String imgUrl) {
     if (_item.containsKey(foodId)) {
       _item.update(
           foodId,
@@ -46,6 +49,7 @@ class Cart with ChangeNotifier {
                 name: existingCart.name,
                 price: existingCart.price,
                 quantity: existingCart.quantity + 1,
+                imgUrl: existingCart.imgUrl
               ));
     } else {
       _item.putIfAbsent(
@@ -55,6 +59,7 @@ class Cart with ChangeNotifier {
                 name: name,
                 price: price,
                 quantity: 1,
+                imgUrl: imgUrl,
               ));
     }
     notifyListeners();
@@ -68,6 +73,7 @@ class Cart with ChangeNotifier {
                 name: existingCart.name,
                 price: existingCart.price,
                 quantity: existingCart.quantity >0?existingCart.quantity-1:existingCart.quantity,
+                imgUrl: existingCart.imgUrl,
               ));
       }
       notifyListeners();
@@ -81,6 +87,8 @@ class Cart with ChangeNotifier {
               name: existingCart.name,
               price: existingCart.price,
               quantity: existingCart.quantity+1,
+                imgUrl: existingCart.imgUrl,
+
           ));
       }
       notifyListeners();
@@ -99,6 +107,8 @@ class Cart with ChangeNotifier {
               name: existingCart.name,
               price: existingCart.price,
               quantity: existingCart.quantity-1,
+                imgUrl: existingCart.imgUrl,
+
           )
           );
     }

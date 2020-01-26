@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './Restaurant_card_alignment.dart';
-import '../provider/restaurants.dart';
+import '../provider/restaurantData.dart';
+import '../provider/auth_user.dart';
+
 import 'dart:math';
 
 List<Alignment> cardsAlign = [
@@ -29,7 +31,7 @@ class _RestaurantDetailState extends State<RestaurantDetailAlignment>
     with SingleTickerProviderStateMixin {
   int cardsCounter = 0;
   int count = 0;
-
+  int length=0;
   List<RestaurantCardAlignment> cards = new List();
   AnimationController _controller;
 
@@ -59,11 +61,12 @@ class _RestaurantDetailState extends State<RestaurantDetailAlignment>
 
   @override
   Widget build(BuildContext context) {
-    final restaurant = Provider.of<Restaurants>(context);
+    final auth = Provider.of<AuthUser>(context, listen: false);
+    final restaurant = Provider.of<RestaurantData>(context);
     final item = restaurant.item;
+    length = item.length;
 
-    return new Card(
-        child: new Stack(
+    return new Stack(
       children: <Widget>[
         backCard(),
         middleCard(),
@@ -73,12 +76,6 @@ class _RestaurantDetailState extends State<RestaurantDetailAlignment>
         _controller.status != AnimationStatus.forward
             ? new SizedBox.expand(
                 child: new GestureDetector(
-                // onTap: () => Navigator.of(context).pushNamed(
-                //   RestaurantDetailScreen.routeName,
-                //   arguments: item[count].id,
-                  
-                // ),
-        
                 // While dragging the first card
                 onPanUpdate: (DragUpdateDetails details) {
                   // Add what the user swiped in the last frame to the alignment of the card
@@ -99,9 +96,12 @@ class _RestaurantDetailState extends State<RestaurantDetailAlignment>
                 onPanEnd: (_) {
                   // If the front card was swiped far enough to count as swiped
                   if (frontCardAlign.x > 2.0 || frontCardAlign.x < -2.0) {
-                    if (frontCardAlign.x > 2.0) item[count].isfav();
-                    count++;
-
+                    if (frontCardAlign.x > 2.0)
+                      item[count].isfav(auth.token, auth.userId);
+                    if (count < length-1)
+                      count++;
+                    else
+                      count = 0; 
                     animateCards();
                   } else {
                     // Return to the initial rotation and alignment
@@ -114,7 +114,7 @@ class _RestaurantDetailState extends State<RestaurantDetailAlignment>
               ))
             : new Container(),
       ],
-    ));
+    );
   }
 
   Widget backCard() {
@@ -163,9 +163,11 @@ class _RestaurantDetailState extends State<RestaurantDetailAlignment>
       cards[0] = cards[1];
       cards[1] = cards[2];
       cards[2] = temp;
-
-      cards[2] = new RestaurantCardAlignment(cardsCounter);
-      cardsCounter++;
+      if (cardsCounter < length) {
+        cards[2] = new RestaurantCardAlignment(cardsCounter);
+        cardsCounter++;
+      } else
+        cardsCounter = 1;
 
       frontCardAlign = defaultFrontCardAlign;
       frontCardRot = 0.0;

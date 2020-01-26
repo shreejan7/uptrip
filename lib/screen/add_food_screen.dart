@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:uptrip/provider/food.dart';
+import 'package:uptrip/provider/restaurant.dart';
+import 'package:uptrip/screen/restaurant_detail_screen.dart';
 import 'package:uptrip/widgets/image_input.dart';
 import '../provider/foods.dart';
 
@@ -30,11 +32,11 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
   var forEdit = true;
   bool forEditChange = false;
   bool isSubmit = false;
+   Restaurant restaurantId;
   @override
   void didChangeDependencies() {
     if (forEdit) {
-      final restaurantId = ModalRoute.of(context).settings.arguments as String;
-      _initValue = restaurantId;
+       restaurantId = ModalRoute.of(context).settings.arguments;
       forEdit = false;
     }
     super.didChangeDependencies();
@@ -51,7 +53,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
 
     final FirebaseStorage _storage =
         FirebaseStorage(storageBucket: 'gs://uptrip-cef8f.appspot.com');
-    String filepath = 'foods/${_food.name}.jpg';
+    String filepath = 'foods/${restaurantId.resName}/${_food.name}.jpg';
   
     StorageUploadTask _uploadTask ;
     setState(() {
@@ -69,7 +71,8 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
         imgUrl: url,
         price: _food.price,
       );
-      food.addFood(_food).catchError((error) {
+      food.addFood(_food).
+      catchError((error) {
         showDialog(
             context: context,
             builder: (_) => AlertDialog(
@@ -82,11 +85,12 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                     )
                   ],
                 ));
-      }).then((_) {
+      }).
+      then((_) {
         setState(() {
           isSubmit = true;
         });
-        Navigator.of(context).pop();
+         Navigator.of(context).pushNamed(RestaurantDetailScreen.routeName,arguments: restaurantId);
       });
     });
   }
@@ -196,7 +200,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                       ),
                     ),
                     SizedBox(height: 30,),
-                    ImageInput(_imageInput),
+                    ImageInput(_imageInput,""),
                   ],
                 ),
               ),

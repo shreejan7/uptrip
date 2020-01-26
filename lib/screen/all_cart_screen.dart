@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uptrip/provider/auth_user.dart';
 import '../provider/carts.dart' show Cart;
 import '../widgets/cart_item.dart';
 import '../provider/order.dart';
@@ -54,6 +55,8 @@ class AllCartScreen extends StatelessWidget {
                 cart.item.values.toList()[i].price,
                 cart.item.values.toList()[i].quantity,
                 cart.item.keys.toList()[i],
+                cart.item.values.toList()[i].imgUrl,
+
               ),
             ),
           )
@@ -74,12 +77,19 @@ class OrderButton extends StatefulWidget {
   @override
   _OrderButtonState createState() => _OrderButtonState();
 }
-
+String userId;
 class _OrderButtonState extends State<OrderButton> {
+  @override
+  void initState() { 
+    super.initState();
+     userId = Provider.of<AuthUser>(context,listen: false).userId;
+  }
   var _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
+    
+    print(userId);
     return FlatButton(
       child: _isLoading ? CircularProgressIndicator() : Text('ORDER NOW'),
       onPressed: (widget.cart.totalPrice <= 0 || _isLoading)
@@ -100,6 +110,7 @@ class _OrderButtonState extends State<OrderButton> {
                               .addItem(
                             widget.cart.item.values.toList(),
                             widget.cart.totalPrice,
+                            userId,
                           );
                           widget.cart.remove();
                           setState(() {

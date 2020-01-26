@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uptrip/screen/restaurant_dashboard.dart';
-import '../provider/restaurants.dart';
+import 'package:uptrip/widgets/drawer_restaurant_owner.dart';
 import '../provider/restaurant.dart';
-import '../provider/foods.dart';
-import 'package:location/location.dart';
+import '../screen/auth_screen.dart';
+import '../provider/auth_user.dart';
+import '../provider/restaurantData.dart';
 import '../widgets/drawer.dart';
-
 import '../screen/foods_of_restaurant_screen.dart';
 
 class RestaurantDetailScreen extends StatefulWidget {
+  
   static const routeName = '/restaurant-detail';
 
   @override
@@ -17,41 +17,36 @@ class RestaurantDetailScreen extends StatefulWidget {
 }
 
 class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
+
+  @override
+  void initState() { 
+    super.initState();
+  }
+  String userId ;
   bool isLoaded = false;
   double latitude;
   double longitude;
   Future<void> _refersh() async {
-    final locationData = await Location().getLocation();
-    latitude=locationData.latitude;
-    longitude=locationData.longitude;
-    await Provider.of<Restaurants>(context).fetchAndSetRestaurantData(latitude,longitude);
+    await Provider.of<RestaurantData>(context).fetchAndSetRestaurantData(userId);
   }
-
   @override
   Widget build(BuildContext context) {
+      final auth = Provider.of<AuthUser>(context,listen: false);
+    final isAuth = Provider.of<AuthUser>(context,listen: false).isAuth;
+    final resMail = Provider.of<AuthUser>(context,listen: false).resEmail;
+        // final token = Provider.of<AuthUser>(context,listen: false).token;
+     userId = Provider.of<AuthUser>(context,listen: false).userId;
     @override
-  
-    Restaurant restaurant;
-    final restaurantId = ModalRoute.of(context).settings.arguments as String;
-    setState(() {
-      restaurant = Provider.of<Restaurants>(
-        context,
-      ).findById(restaurantId);
-    });
+
+        final restaurant =ModalRoute.of(context).settings.arguments as Restaurant;
 
     return Scaffold(
-        drawer: DrawerApp(),
+      
+        drawer:resMail?DrawerRestaurantOwner(restaurant):DrawerApp(),
         appBar: AppBar(
           title: Text(restaurant.name),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('DashBoard'),
-              onPressed: () => Navigator.of(context).pushNamed(
-                RestaurantDashBoard.routeName,
-                arguments: restaurantId,
-              ),
-            ),
-          ],
+          centerTitle: true,
+          
         ),
         body:isLoaded?Center(child: CircularProgressIndicator(),): RefreshIndicator(
           onRefresh: _refersh,
@@ -86,10 +81,27 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                                       color: Theme.of(context).accentColor,
                                     ),
                                     onPressed: () {
-                                      setState(() {
-                                        restaurant.isfav();
-                                      });
-                                    }),
+                  if(isAuth)
+                  restaurant.isfav(auth.token,auth.userId);
+                  else
+                    showDialog(
+                      context: context,
+                      builder: (ctx)=>AlertDialog(
+                        title: Text('Not Login'),
+                        content: Text('Login to favourite the Restaurnat.'),
+                        actions: <Widget>[
+                          FlatButton(
+                            child: Text('Login'),
+                            onPressed: ()=>Navigator.of(context).pushNamed(AuthScreen.routeName),
+                          ),
+                          FlatButton(
+                            child: Text('Not Now'),
+                            onPressed: ()=> Navigator.of(context).pop(),
+                          )
+                        ],
+                      )
+                    );
+                } ),
                                 title: Text(
                                   restaurant.name,
                                   textAlign: TextAlign.center,
@@ -106,7 +118,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                                       // order.addItem(restaurant.id, restaurant.name, 300),
                                       Navigator.of(context).pushNamed(
                                           FoodsOfRestaurantScreen.routeName,
-                                          arguments: restaurant.id),
+                                          arguments: restaurant),
                                 ),
                               ),
                             ),
@@ -156,8 +168,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                               ],
                             ),
                             Text(
-                              restaurant.locationLatitude.toString()+
-                              restaurant.locationLongitude.toString(),
+                              restaurant.location,
                             ),
                           ],
                         ),

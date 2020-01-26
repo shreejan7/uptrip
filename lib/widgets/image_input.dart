@@ -7,7 +7,8 @@ import 'package:image_picker/image_picker.dart';
 
 class ImageInput extends StatefulWidget {
   final Function storeImage;
-  ImageInput(this.storeImage);
+  final String imgUrl;
+  ImageInput(this.storeImage,this.imgUrl);
   @override
   _ImageInputState createState() => _ImageInputState();
 }
@@ -50,10 +51,8 @@ class _ImageInputState extends State<ImageInput> {
                   fit: BoxFit.cover,
                   width: double.infinity,
                 )
-              : Text(
-                  'No Image Taken',
-                  textAlign: TextAlign.center,
-                ),
+              :widget.imgUrl == null?Text('No image choose'): Image.network(widget.imgUrl),
+
           alignment: Alignment.center,
         ),
         SizedBox(
@@ -70,7 +69,7 @@ class _ImageInputState extends State<ImageInput> {
               ),
               FlatButton.icon(
                 icon: Icon(Icons.file_upload),
-                label: Text('Take Picture'),
+                label: Text('Upload Picture'),
                 textColor: Theme.of(context).primaryColor,
                 onPressed: _uploadPicture,
               ),

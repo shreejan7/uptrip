@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import './Restaurant_item.dart';
-import '../provider/restaurants.dart';
+import './Restaurant_detail_each_grid.dart';
+import '../provider/restaurantData.dart';
 import 'package:provider/provider.dart';
 
 class AllRestaurantGrid extends StatelessWidget {
@@ -8,7 +8,7 @@ class AllRestaurantGrid extends StatelessWidget {
   @override
   AllRestaurantGrid(this.isFav);
   Widget build(BuildContext context) {
-    final restaurantData = Provider.of<Restaurants>(context);
+    final restaurantData = Provider.of<RestaurantData>(context);
     final restaurant = isFav ? restaurantData.fav : restaurantData.item;
     return GridView.builder(
       scrollDirection: Axis.vertical,
@@ -16,7 +16,7 @@ class AllRestaurantGrid extends StatelessWidget {
       itemCount: restaurant.length,
       itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
         value: restaurant[i],
-        child: RestaurantItem(
+        child: RestaurantDetailEachGrid(
             // restaurant[i].id,
             // restaurant[i].name,
             // restaurant[i].imgUrl,

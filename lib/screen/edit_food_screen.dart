@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:uptrip/provider/food.dart';
+import 'package:uptrip/provider/restaurant.dart';
 import '../provider/foods.dart';
 
 class EditFoodScreen extends StatefulWidget {
@@ -20,7 +21,7 @@ class _EditFoodScreenState extends State<EditFoodScreen> {
     description: '',
     restaurantId: '',
     imgUrl:
-        'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
+        '',
     price: null,
   );
 
@@ -32,7 +33,16 @@ class _EditFoodScreenState extends State<EditFoodScreen> {
       final foodId = ModalRoute.of(context).settings.arguments as String;
 
       if (foodId != null) {
-        _food = Provider.of<Foods>(context, listen: false).findById(foodId);
+        final  data = Provider.of<Foods>(context, listen: false).findById(foodId);
+          _food = new Food(
+    id: data.id,
+    name: data.name,
+    description: data.description,
+    restaurantId: data.restaurantId,
+    imgUrl:
+        data.imgUrl,
+    price: data.price,
+  );
       }
       forEdit = false;
     }
@@ -47,6 +57,7 @@ class _EditFoodScreenState extends State<EditFoodScreen> {
     if (!isValidate) return;
     _form.currentState.save();
     final food = Provider.of<Foods>(context, listen: false);
+    print('THis is a food'+foodId.toString());
     food.upDateFood(foodId, _food);
     setState(() {
       isSubmit = true;
@@ -102,7 +113,7 @@ class _EditFoodScreenState extends State<EditFoodScreen> {
                         restaurantId: _food.restaurantId,
                         isFavourite: _food.isFavourite,
                         imgUrl:
-                            'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
+                            _food.imgUrl,
                         price: _food.price,
                       ),
                     ),
@@ -129,7 +140,7 @@ class _EditFoodScreenState extends State<EditFoodScreen> {
                         restaurantId: _food.restaurantId,
                         isFavourite: _food.isFavourite,
                         imgUrl:
-                            'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
+                            _food.imgUrl,
                         price: double.parse(v),
                       ),
                     ),
@@ -148,7 +159,7 @@ class _EditFoodScreenState extends State<EditFoodScreen> {
                         name: _food.name,
                         description: v,
                         imgUrl:
-                            'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
+                            _food.imgUrl,
                         price: _food.price,
                       ),
                     ),

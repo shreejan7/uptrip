@@ -1,33 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uptrip/provider/restaurant.dart';
 import 'package:uptrip/widgets/food_item.dart';
-import '../provider/restaurants.dart';
 import '../provider/foods.dart';
 import '../provider/carts.dart';
 import '../widgets/badge.dart';
 import '../screen/all_cart_screen.dart';
 import '../widgets/drawer.dart';
 
-class FoodsOfRestaurantScreen extends StatelessWidget {
+class FoodsOfRestaurantScreen extends StatefulWidget {
   static const routeName = '/foods-detail';
+
+  @override
+  _FoodsOfRestaurantScreenState createState() => _FoodsOfRestaurantScreenState();
+}
+
+class _FoodsOfRestaurantScreenState extends State<FoodsOfRestaurantScreen> {
+   
+  
   @override
   Widget build(BuildContext context) {
-    Future<void> refresh() async {
-      await Provider.of<Foods>(context, listen: false).fetchAndSetFoodsData();
-    }
-
-    final restaurantId = ModalRoute.of(context).settings.arguments as String;
-    final restaurant = Provider.of<Restaurants>(
-      context,
-      listen: false,
-    ).findById(restaurantId);
-    // final food = Provider.of<Foods>(context);
-    // final foodItem = food.restaurantFood(restaurantId);
-
+    Restaurant restaurant = ModalRoute.of(context).settings.arguments;
+    print(restaurant.resName);
     return Scaffold(
       drawer: DrawerApp(),
       appBar: AppBar(
-        title: Text(restaurant.name),
+        title: Text(restaurant.name.toString()),
         actions: <Widget>[
           Consumer<Cart>(
             builder: (_, cart, ch) => Badge(
@@ -44,22 +42,30 @@ class FoodsOfRestaurantScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: refresh,
-        child: FutureBuilder(
-          future: Provider.of<Foods>(context,listen: false,).fetchAndSetFoodsData(),
-          builder: (ctx, dataSnapshot) {
-            if (dataSnapshot.connectionState == ConnectionState.waiting) {
+      body: FutureBuilder(
+        future: Provider.of<Foods>(
+          context,
+          listen: false,
+        ).fetchAndSetFoodsData(restaurant.resName),
+        builder: (ctx, dataSnapshot) {
+          if (dataSnapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            if (dataSnapshot.error != null) {
+              print(dataSnapshot.error.toString());
               return Center(
-                child: CircularProgressIndicator(),
+                child: Text("There is some error"),
               );
-            } else {
-              if (dataSnapshot.error != null) {
-                return Center(
-                  child: Text("There is some error"),
-                );
-              } else
-                return Consumer<Foods>(
+            } else
+            
+              return 
+              // RefreshIndicator(
+              //   onRefresh: ()=>
+              //   refresh(context),
+                // child:
+                 Consumer<Foods>(
                   builder: (ctx, foodItem, child) => GridView.builder(
                     itemCount: foodItem.item.length,
                     itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
@@ -74,10 +80,10 @@ class FoodsOfRestaurantScreen extends StatelessWidget {
                     ),
                   ),
                 );
-            }
-          },
-        ),
+          }
+        }
       ),
+      
     );
   }
 }

@@ -49,6 +49,11 @@ class _OrderItemState extends State<OrderItem> {
                   itemBuilder: (ctx, i) => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
+                      CircleAvatar(
+                        radius: 40,
+                        backgroundImage:
+                            NetworkImage(widget.order.foodOrder[i].imgUrl),
+                      ),
                       Text(
                         widget.order.foodOrder[i].name,
                         style: TextStyle(
@@ -66,10 +71,8 @@ class _OrderItemState extends State<OrderItem> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      
                     ],
                   ),
-                  
                 ),
               ),
           ],

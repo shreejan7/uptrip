@@ -1,53 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uptrip/screen/foods_of_restaurant_screen.dart';
 import '../provider/auth_user.dart';
 import '../screen/auth_screen.dart';
-import '../screen/order_screen.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import '../screen/restaurant_entry_screen.dart';
+import '../provider/restaurant.dart';
+import 'package:uptrip/screen/add_food_screen.dart';
+import '../screen/restaurant_detail_screen.dart';
+import '../screen/food_item_screen.dart';
 
-class DrawerApp extends StatefulWidget {
-  @override
-  _DrawerAppState createState() => _DrawerAppState();
-}
 
-class _DrawerAppState extends State<DrawerApp> {
-  bool isLoading = false;
-  bool resOwner = false;
-  String email;
-  @override
-  Widget build(BuildContext context) {
-    final auth = Provider.of<AuthUser>(context, listen: false);
-    auth.autoLogin().then((va) {
-       email = auth.userEmail;
-       if(email.contains('@uptrip')){
-          resOwner = true;
-  }
-      setState(() {
-        isLoading = true;
-      });
-    });
-    return 
-         ForDrawer(resOwner,email);
-        
-  }
-}
-Future<void> resOwner(BuildContext context, String email) async{
-   final userEmail = email.replaceAll(RegExp(r'[^\w\s]+'),'');
-  String url =
-            'https://uptrip-cef8f.firebaseio.com/restaurantUsers.json?orderBy="forRestaurant"&equalTo="$userEmail"';
-        var data = await http.get(url);
-        Map<String,dynamic> dataAll = json.decode(data.body);
-         Navigator.of(context).pushNamed(
-              RestaurantEntryScreen.routeName,
-              arguments: dataAll,
-            );
-}
-class ForDrawer extends StatelessWidget {
-  final String email;
-  final bool resowner;
-  ForDrawer(this.resowner,this.email);
+class DrawerRestaurantOwner extends StatelessWidget {
+  final Restaurant restaurant;
+  DrawerRestaurantOwner(this.restaurant);
    
   
   @override
@@ -62,7 +26,7 @@ class ForDrawer extends StatelessWidget {
         children: <Widget>[
           AppBar(
             title: Text(
-              'Hey Traveller',
+              'Welcome',
             ),
             automaticallyImplyLeading: false,
           ),
@@ -92,9 +56,10 @@ class ForDrawer extends StatelessWidget {
           if (isAuth)
             ListTile(
               leading: Icon(Icons.payment),
-              title: Text('Payment'),
+              title: Text('Detail Example'),
               onTap: () =>
-                  Navigator.of(context).pushNamed(OrderScreen.routeName),
+                              Navigator.of(context).pushNamed(RestaurantDetailScreen.routeName,arguments: restaurant,),
+
             ),
           if (!isAuth)
             Divider(),
@@ -108,10 +73,31 @@ class ForDrawer extends StatelessWidget {
           if (!isAuth)
             ListTile(
               leading: Icon(Icons.people),
-              title: Text("Login/Sign Up"),
+              title: Text("Foods example"),
               onTap: () =>
-                  Navigator.of(context).pushNamed(AuthScreen.routeName),
+                  Navigator.of(context).pushNamed(FoodsOfRestaurantScreen.routeName),
             ),
+             if (isAuth)
+            Divider(),
+          if (isAuth)
+            ListTile(
+                leading: Icon(Icons.people),
+                title: Text("Add food"),
+                onTap: () {
+                   Navigator.of(context).pushNamed(
+              AddFoodScreen.routeName,arguments: restaurant,
+            );
+                }),
+                 if (isAuth)
+            Divider(),
+          if (isAuth)
+            ListTile(
+                leading: Icon(Icons.people),
+                title: Text("Edit food"),
+                onTap: ()=>
+                                Navigator.of(context).pushNamed(FoodItemScreen.routeName,arguments: restaurant),
+
+                ),
           if (isAuth)
             Divider(),
           if (isAuth)
@@ -123,13 +109,7 @@ class ForDrawer extends StatelessWidget {
                   Navigator.of(context).pushReplacementNamed('/');
                   Provider.of<AuthUser>(context, listen: false).logout();
                 }),
-                 if (resowner)
-            ListTile(
-                leading: Icon(Icons.people),
-                title: Text("DashBoard"),
-                onTap: () {
-                  resOwner(context,email);
-                }),
+               
         ],
       ),
     );

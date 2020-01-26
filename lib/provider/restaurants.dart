@@ -1,162 +1,124 @@
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:location/location.dart';
 import './restaurant.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Restaurants with ChangeNotifier {
-  static const url = 'https://uptrip-cef8f.firebaseio.com/restaurant.json';
-  List<Restaurant> _item = [
-    // Restaurant(
-    //   id: '2',
-    //   name: 'Lahana',
-    //   description:
-    //       'This is a newari restaurant. This is a newari restaurant. This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.This is a newari restaurant.',
-    //   location: "Kalanki",
-    //   imgUrl:
-    //       'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
-    // ),
-    // Restaurant(
-    //   id: '3',
-    //   name: 'Sasa',
-    //   description: 'This is a newari restaurant',
-    //   location: "Kalanki",
-    //   imgUrl:
-    //       'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
-    // ),
-    // Restaurant(
-    //   id: '32',
-    //   name: 'Sasa3',
-    //   description: 'This is a newari restaurant',
-    //   location: "Kalanki",
-    //   imgUrl:
-    //       'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
-    // ),
-    // Restaurant(
-    //   id: '44',
-    //   name: 'Sasa4',
-    //   description: 'This is a newari restaurant',
-    //   location: "Kalanki",
-    //   imgUrl:
-    //       'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
-    // ),
-    // Restaurant(
-    //   id: '50',
-    //   name: 'Sasa5',
-    //   description: 'This is a newari restaurant',
-    //   location: "Kalanki",
-    //   imgUrl:
-    //       'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
-    // ),
-    // Restaurant(
-    //   id: '58',
-    //   name: 'Sasa5',
-    //   description: 'This is a newari restaurant',
-    //   location: "Kalanki",
-    //   imgUrl:
-    //       'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
-    // ),
-    // Restaurant(
-    //   id: '54',
-    //   name: 'Sasa5',
-    //   description: 'This is a newari restaurant',
-    //   location: "Kalanki",
-    //   imgUrl:
-    //       'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
-    // ),
-    // Restaurant(
-    //   id: '65',
-    //   name: 'Sasa5',
-    //   description: 'This is a newari restaurant',
-    //   location: "Kalanki",
-    //   imgUrl:
-    //       'https://goodfoodnepal.com/wp-content/uploads/2018/05/buffmomo-150.jpg',
-    // ),
-  ];
+  final String authToken;
+  final String userId;
+  final String email;
+  Restaurants(this.authToken, this.userId, this.email);
+  
 
-  List<Restaurant> get item {
-    return [..._item];
+  Future<void> addRestaurant(
+      Restaurant restaurantData, String userEmail,String idRes) async {
+    final address = await Location().getLocation();
+    Coordinates coordinate =
+        new Coordinates(address.latitude, address.longitude);
+    final addresses =
+        await Geocoder.local.findAddressesFromCoordinates(coordinate);
+    String addressPostal = addresses.first.postalCode.toString();
+    String addressCity = addresses.first.locality;
+    String adressroad = addresses.first.featureName;
+    String filter =
+        addressCity + addressPostal + adressroad.replaceAll(' ', '');
+    print(filter);
+    print(restaurantData.name);
+    String url ;
+    print(userEmail.toString());
+     url = 'https://uptrip-cef8f.firebaseio.com/restaurantUsers/$idRes.json?';
+    http.patch(url,body: json.encode(
+                  {
+                    'restaurantName': restaurantData.name,
+                    'description': restaurantData.description,
+                    'locationLatitude': restaurantData.locationLatitude,
+                    'locationLongitude': restaurantData.locationLongitude,
+                    'imgUrl': restaurantData.imgUrl,
+                    'forRestaurant':userEmail,
+                    'location': addresses.first.addressLine,
+                    'time':DateTime.now().toString(),
+                    'filterLocation':filter,
+                  },)).then((v){
+                    print(json.decode(v.body));
+                  });
+    // String url =
+    //     'https://uptrip-cef8f.firebaseio.com/restaurant/$addressCity/$filter.json?';
+    // http
+    //     .post(url,
+    //         body: json.encode(
+    //           {
+    //             'name': restaurantData.name,
+    //             'description': restaurantData.description,
+    //             'locationLatitude': restaurantData.locationLatitude,
+    //             'locationLongitude': restaurantData.locationLongitude,
+    //             'imgUrl': restaurantData.imgUrl,
+    //             'isFavourite': restaurantData.isFavourite,
+    //             'location': addresses.first.addressLine,
+    //           },
+    //         ))
+    //     .then((response) {
+    //   firstId = json.decode(response.body)['name'].toString();
+    //   print('done 1');
+    //   url = 'https://uptrip-cef8f.firebaseio.com/newRestaurant.json?';
+    //   http
+    //       .post(url,
+    //           body: json.encode(
+    //             {
+    //               'name': restaurantData.name,
+    //               'description': restaurantData.description,
+    //               'locationLatitude': restaurantData.locationLatitude,
+    //               'locationLongitude': restaurantData.locationLongitude,
+    //               'imgUrl': restaurantData.imgUrl,
+    //               'isFavourite': restaurantData.isFavourite,
+    //               'location': addresses.first.addressLine,
+    //             },
+    //           ))
+    //       .then((response) async {
+    //     secondId = json.decode(response.body)['name'].toString();
+    //     url =
+    //         'https://uptrip-cef8f.firebaseio.com/restaurantUsers/$userEmail.json?';
+    //     String idFinal;
+    //     final id = await http.get(url);
+    //     Map<String, dynamic> idValue = json.decode(id.body);
+    //     idValue.forEach((id, val) {
+    //       idFinal = id;
+    //     });
+    //     print(userEmail);
+    //     url =
+    //         'https://uptrip-cef8f.firebaseio.com/restaurantUsers/$userEmail/$idFinal.json?';
+    //     http
+    //         .patch(url,
+    //             body: json.encode(
+    //               {
+    //                 'restaurantName': restaurantData.name,
+    //                 'description': restaurantData.description,
+    //                 'locationLatitude': restaurantData.locationLatitude,
+    //                 'locationLongitude': restaurantData.locationLongitude,
+    //                 'imgUrl': restaurantData.imgUrl,
+    //                 'location': addresses.first.addressLine,
+    //               },
+    //             ))
+    //         .then((response) {
+    //     url =
+    //         'https://uptrip-cef8f.firebaseio.com/forFood/$userEmail.json?';
+    //         http.post(url,body:json.encode({
+    //           'userEmail':userEmail,
+    //           'firstId':firstId,
+    //           'secondId':secondId,
+    //         }));
+    //       print('ok done');
+    //       print(firstId);
+    //       print(secondId);
+    //     });
+
+    //     notifyListeners();
+    //   });
+    // }).catchError((error) {
+    //   throw error;
+    // });
   }
 
-  List<Restaurant> get fav {
-    return _item.where((productItem) => productItem.isFavourite).toList();
-  }
-//  void showFav(){
-//    _isFavourite=true;
-//    notifyListeners();
-//  }
-
-//   void showAll(){
-//     _isFavourite=false;
-//     notifyListeners();
-//   }
-
-  Restaurant findById(String id) {
-    return _item.firstWhere((pro) => pro.id == id);
-  }
-
-  void update(String id, Restaurant restaurantData) {
-    final url = 'https://uptrip-cef8f.firebaseio.com/restaurant/$id.json';
-    http.patch(url,
-        body: json.encode({
-          'name': restaurantData.name,
-          'description': restaurantData.description,
-          'locationLatitude': restaurantData.locationLatitude,
-          'locationLongitude': restaurantData.locationLongitude,
-          'imgUrl': restaurantData.imgUrl,
-          'isFavourite': restaurantData.isFavourite,
-        }));
-  }
-
-  void addRestaurant(Restaurant restaurantData) {
-    http
-        .post(url,
-            body: json.encode(
-              {
-                'id': restaurantData.id,
-                'name': restaurantData.name,
-                'description': restaurantData.description,
-                'locationLatitude': restaurantData.locationLatitude,
-                'locationLongitude': restaurantData.locationLongitude,
-                'imgUrl': restaurantData.imgUrl,
-                'isFavourite': restaurantData.isFavourite,
-              },
-            ))
-        .then((response) {
-      _item.add(new Restaurant(
-        id: json.decode(response.body)['name'],
-        description: restaurantData.description,
-        name: restaurantData.name,
-        locationLatitude: restaurantData.locationLatitude,
-        locationLongitude: restaurantData.locationLongitude,
-        imgUrl: restaurantData.imgUrl,
-        isFavourite: restaurantData.isFavourite,
-      ));
-      notifyListeners();
-    }).catchError((error) {
-      throw error;
-    });
-  }
-
-  Future<void> fetchAndSetRestaurantData(double latitude,double longitude) async {
-    _item = [];
-    try {
-      final restaurantData = await http.get(url);
-      print(json.decode(restaurantData.body));
-      final eachData = json.decode(restaurantData.body) as Map<String, dynamic>;
-      if (eachData.isEmpty) return;
-      eachData.forEach((id, eachData) {
-        _item.add(
-          new Restaurant(
-            id: id,
-            name: eachData['name'],
-            description: eachData['description'],
-            locationLatitude: eachData['locationLatitude'],
-            locationLongitude: eachData['locationLongitude'],
-            imgUrl: eachData['imgUrl'],
-          ),
-        );
-        notifyListeners();
-      });
-    } catch (error) {}
-  }
+  
 }

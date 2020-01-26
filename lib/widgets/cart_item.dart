@@ -8,13 +8,9 @@ class CartItem extends StatelessWidget {
   final double price;
   final int quantity;
   final String foodId;
+  final String imgUrl;
   CartItem(
-    this.id,
-    this.name,
-    this.price,
-    this.quantity,
-    this.foodId,
-  );
+      this.id, this.name, this.price, this.quantity, this.foodId, this.imgUrl);
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(
@@ -31,19 +27,20 @@ class CartItem extends StatelessWidget {
         key: ValueKey(id),
         background: Container(
           alignment: Alignment.centerRight,
-          child: Icon(Icons.delete,color: Colors.white,),
+          child: Icon(
+            Icons.delete,
+            color: Colors.white,
+          ),
           color: Colors.red,
         ),
-        child: Row(
-          children: <Widget>[
-            CircleAvatar(
-              child: FittedBox(
-                  child: Text(
-                'Rs$price',
-              )),
-            ),
-            Spacer(),
-            Column(children: <Widget>[
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: <Widget>[
+              CircleAvatar(
+                radius: 40,
+                backgroundImage: NetworkImage(imgUrl),
+              ),
               Text(
                 name,
                 style: TextStyle(
@@ -52,19 +49,25 @@ class CartItem extends StatelessWidget {
                 ),
               ),
               Text((price * quantity).toString()),
-            ]),
-            IconButton(
-              padding: EdgeInsetsDirectional.only(bottom: 15),
-              onPressed: () => cart.removeQuantity(foodId),
-              icon: Icon(Icons.minimize),
-            ),
-            Text("${(quantity)} x"),
-            IconButton(
-              padding: EdgeInsetsDirectional.only(bottom: 0),
-              onPressed: () => cart.addQuantity(foodId),
-              icon: Icon(Icons.add),
-            ),
-          ],
+              Center(
+                child: Row(
+                  children: <Widget>[
+                    IconButton(
+                      padding: EdgeInsetsDirectional.only(bottom: 15),
+                      onPressed: () => cart.removeQuantity(foodId),
+                      icon: Icon(Icons.minimize),
+                    ),
+                    Text("${(quantity)} x"),
+                    IconButton(
+                      padding: EdgeInsetsDirectional.only(bottom: 0),
+                      onPressed: () => cart.addQuantity(foodId),
+                      icon: Icon(Icons.add),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

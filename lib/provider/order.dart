@@ -8,29 +8,35 @@ class OrderItem with ChangeNotifier {
   final double amount;
   final List<CartItem> foodOrder;
   final DateTime dateTime;
+  final url;
 
   OrderItem({
     @required this.id,
     @required this.amount,
     @required this.foodOrder,
     @required this.dateTime,
+    @required this.url,
   });
 }
 
 class Order with ChangeNotifier {
+
+  // final String authToken;
+  // final String userId;
+  // final String email;
+  Order();
   List<OrderItem> _orderRegister = [];
 
   List<OrderItem> get item {
     return [..._orderRegister];
   }
 
-  Future<void> setAndFetchOrderData() async {
-    const url = 'https://uptrip-cef8f.firebaseio.com/order.json';
+  Future<void> setAndFetchOrderData( String userId ) async {
+    String url = 'https://uptrip-cef8f.firebaseio.com/order/$userId.json';
     final exportData = await http.get(url);
     final foodData = json.decode(exportData.body) as Map<String, dynamic>;
     if(foodData.isEmpty)
       return;
-    print(json.decode(exportData.body));
     foodData.forEach((foodId, foodData) {
       
       _orderRegister.add(
@@ -44,9 +50,11 @@ class Order with ChangeNotifier {
               name: data['name'],
               price: data['price'],
               quantity: data['quantity'],
+              imgUrl: data['imgUrl']
 
             ),
           ).toList(),
+            url:foodData['imgUrl'],
         ),
       );
       _orderRegister.reversed.toList(); 
@@ -54,10 +62,11 @@ class Order with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addItem(List<CartItem> foodOrder, double total) async {
-    final url = 'https://uptrip-cef8f.firebaseio.com/order.json';
+  Future<void> addItem(List<CartItem> foodOrder, double total,String userId,) async {
+    print(userId);
+    final url = 'https://uptrip-cef8f.firebaseio.com/order/$userId.json';
     final timestamp = DateTime.now();
-    var responce = await http.post(url,
+    await http.post(url,
         body: json.encode({
           'amount': total,
           'foodOrder': foodOrder
@@ -66,18 +75,11 @@ class Order with ChangeNotifier {
                     'name': value.name,
                     'price': value.price,
                     'quantity': value.quantity,
+                    'imgUrl':value.imgUrl,
                   })
               .toList(),
           'dateTime': timestamp.toIso8601String(),
+          
         }));
-    // _orderRegister.insert(
-    //     0,
-    //     OrderItem(
-    //       id: json.decode(responce.body)['name'],
-    //       amount: total,
-    //       foodOrder: foodOrder,
-    //       dateTime: timestamp,
-    //     ));
-    // notifyListeners();
   }
 }

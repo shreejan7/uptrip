@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../widgets/input_location.dart';
 import 'package:location/location.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:provider/provider.dart';
+import '../screen/food_item_screen.dart';
+import 'package:uptrip/widgets/drawer_restaurant_owner.dart';
+import '../widgets/input_location.dart';
 import '../provider/restaurant.dart';
 import '../provider/restaurants.dart';
 import '../widgets/image_input.dart';
 import 'dart:io';
+import '../provider/auth_user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import '../provider/foods.dart';
+
 
 class RestaurantEntryScreen extends StatefulWidget {
   static const routeName = 'restaurant-entry-screen';
@@ -28,24 +34,32 @@ class _RestaurantEntryScreenState extends State<RestaurantEntryScreen> {
     locationLatitude: 0.0,
     locationLongitude: 0.0,
     imgUrl: '',
+    location: '',
+    resName:'',
   );
-    Future<void> inputUserLocation() async{
-    final locationData = await Location().getLocation();
-    print(locationData.latitude);
-    print(locationData.longitude);
-    latitude = locationData.latitude;
-    longitude = locationData.longitude;
-
+  String placeName;
+    Future<String> inputUserLocation() async{
+    final addressPoint = await Location().getLocation();
+    latitude = addressPoint.latitude;
+    longitude = addressPoint.longitude;
+   Coordinates coordinate = new Coordinates(addressPoint.latitude, addressPoint.longitude);
+  final addresses = await Geocoder.local.findAddressesFromCoordinates(coordinate);
+    return addresses.first.addressLine.toString();
+    // print(imageUrl);
   }
+    String idRes;
+
+  bool check=false;
   Future<void> save() async {
+    print(_restaurant.description);
     setState(() {
       _isLoading = true;
     });
     key.currentState.save();
-    final restaurantData = Provider.of<Restaurants>(context);
+    final restaurantData = Provider.of<Restaurants>(context,listen: false);
     final FirebaseStorage _storage =
         FirebaseStorage(storageBucket: 'gs://uptrip-cef8f.appspot.com');
-    String filepath = 'restaurants/${_restaurant.name}.jpg';
+    String filepath = 'restaurants/${_restaurant.resName}/${_restaurant.name}.jpg';
     StorageUploadTask _uploadTask;
     setState(() {
       _uploadTask = _storage.ref().child(filepath).putFile(_image);
@@ -59,9 +73,18 @@ class _RestaurantEntryScreenState extends State<RestaurantEntryScreen> {
         locationLatitude:latitude,
         locationLongitude: longitude,
         imgUrl: url,
+        location: _restaurant.location,
+        resName: _restaurant.resName,
       );
-      restaurantData.addRestaurant(_restaurant);
-      Navigator.of(context).pop();
+      final email= Provider.of<AuthUser>(context,listen: false).userEmail;
+      print("tis si email"+email);
+      final urlEmail = email.replaceAll(RegExp(r'[^\w\s]+'),''); 
+      restaurantData.addRestaurant(_restaurant,urlEmail,idRes).then((_){
+         setState(() {
+           check = true;
+      _isLoading = false;
+    });
+      });
     });
   }
 
@@ -79,13 +102,31 @@ class _RestaurantEntryScreenState extends State<RestaurantEntryScreen> {
       _image = image;
     });
   }
-
   @override
   Widget build(BuildContext context) {
+    final data =ModalRoute.of(context).settings.arguments as Map<String,dynamic>;
+    data.forEach((id,eachData) {
+
+      _restaurant = new Restaurant(
+              id: id,
+            name: eachData['restaurantName'],
+            description: eachData['description'],
+            locationLatitude: 1.2,
+            locationLongitude: 1.2,
+            imgUrl: eachData['imgUrl'],
+            location: eachData['location'],
+            resName:eachData['forRestaurant'],
+            );
+    
+            
+    });
+
     return Scaffold(
+       drawer:DrawerRestaurantOwner(_restaurant) ,
       appBar: AppBar(
         title: Text('Enter Restaurant Detail'),
         actions: <Widget>[
+          
           IconButton(
             icon: Icon(Icons.save),
             onPressed: save,
@@ -109,6 +150,7 @@ class _RestaurantEntryScreenState extends State<RestaurantEntryScreen> {
                       decoration: InputDecoration(
                         labelText: 'Resataurant Name',
                       ),
+                      initialValue:_restaurant.name,
                       keyboardType: TextInputType.text,
                       textInputAction: TextInputAction.next,
                       validator: (value) {
@@ -128,6 +170,9 @@ class _RestaurantEntryScreenState extends State<RestaurantEntryScreen> {
                           locationLatitude: _restaurant.locationLatitude,
                           locationLongitude: _restaurant.locationLongitude,
                           imgUrl: _restaurant.imgUrl,
+                          location: _restaurant.location,
+                                  resName: _restaurant.resName,
+
                         );
                       },
                     ),
@@ -135,6 +180,7 @@ class _RestaurantEntryScreenState extends State<RestaurantEntryScreen> {
                       height: 30,
                     ),
                     TextFormField(
+                      initialValue: _restaurant.description,
                       decoration: InputDecoration(
                         labelText: 'Input description',
                       ),
@@ -158,14 +204,18 @@ class _RestaurantEntryScreenState extends State<RestaurantEntryScreen> {
                           locationLatitude: _restaurant.locationLatitude,
                           locationLongitude: _restaurant.locationLongitude,
                           imgUrl: _restaurant.imgUrl,
+                          location: _restaurant.location,
+                                  resName: _restaurant.resName,
+
+
                         );
                       },
                     ),
                     SizedBox(
                       height: 30,
                     ),
-                    ImageInput(_imageInput),
-                    InputLocation(inputUserLocation),
+                    ImageInput(_imageInput,_restaurant.imgUrl),
+                    InputLocation(inputUserLocation,),
                   ],
                 ),
               ),
