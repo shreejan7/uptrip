@@ -6,6 +6,7 @@ class CartItem with ChangeNotifier {
   double price;
   int quantity;
   String imgUrl;
+  String resName;
 
   CartItem({
     @required this.id,
@@ -13,6 +14,7 @@ class CartItem with ChangeNotifier {
     @required this.price,
     @required this.quantity,
     @required this.imgUrl,
+    @required this.resName,
   });
 }
 
@@ -40,7 +42,7 @@ class Cart with ChangeNotifier {
      }
     notifyListeners();
    }
-  void addItem(String foodId, String name, double price,String imgUrl) {
+  void addItem(String foodId, String name, double price,String imgUrl,String resName) {
     if (_item.containsKey(foodId)) {
       _item.update(
           foodId,
@@ -49,7 +51,8 @@ class Cart with ChangeNotifier {
                 name: existingCart.name,
                 price: existingCart.price,
                 quantity: existingCart.quantity + 1,
-                imgUrl: existingCart.imgUrl
+                imgUrl: existingCart.imgUrl,
+                resName: existingCart.resName
               ));
     } else {
       _item.putIfAbsent(
@@ -60,6 +63,7 @@ class Cart with ChangeNotifier {
                 price: price,
                 quantity: 1,
                 imgUrl: imgUrl,
+                resName: resName
               ));
     }
     notifyListeners();
@@ -74,6 +78,7 @@ class Cart with ChangeNotifier {
                 price: existingCart.price,
                 quantity: existingCart.quantity >0?existingCart.quantity-1:existingCart.quantity,
                 imgUrl: existingCart.imgUrl,
+                resName: existingCart.resName
               ));
       }
       notifyListeners();
@@ -88,6 +93,7 @@ class Cart with ChangeNotifier {
               price: existingCart.price,
               quantity: existingCart.quantity+1,
                 imgUrl: existingCart.imgUrl,
+                resName: existingCart.resName
 
           ));
       }
@@ -108,6 +114,7 @@ class Cart with ChangeNotifier {
               price: existingCart.price,
               quantity: existingCart.quantity-1,
                 imgUrl: existingCart.imgUrl,
+                resName: existingCart.resName
 
           )
           );

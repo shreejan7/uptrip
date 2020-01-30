@@ -96,12 +96,16 @@ class _RestaurantDetailState extends State<RestaurantDetailAlignment>
                 onPanEnd: (_) {
                   // If the front card was swiped far enough to count as swiped
                   if (frontCardAlign.x > 2.0 || frontCardAlign.x < -2.0) {
-                    if (frontCardAlign.x > 2.0)
+                    if(auth.isAuth){if (frontCardAlign.x > 2.0)
                       item[count].isfav(auth.token, auth.userId);
-                    if (count < length-1)
-                      count++;
                     else
+                      item[count].notIsFav(auth.token, auth.userId);
+                       count++;
+                    if(count>=length)
                       count = 0; 
+                   }
+                    
+                     
                     animateCards();
                   } else {
                     // Return to the initial rotation and alignment
@@ -159,15 +163,21 @@ class _RestaurantDetailState extends State<RestaurantDetailAlignment>
   void changeCardsOrder() {
     setState(() {
       // Swap cards (back card becomes the middle card; middle card becomes the front card, front card becomes a new bottom card)
-      var temp = cards[0];
+     
+     
+         var temp = cards[0];
       cards[0] = cards[1];
       cards[1] = cards[2];
       cards[2] = temp;
-      if (cardsCounter < length) {
         cards[2] = new RestaurantCardAlignment(cardsCounter);
         cardsCounter++;
-      } else
-        cardsCounter = 1;
+        if(cardsCounter>=length)
+        cardsCounter = 0;
+      // } else{
+      //   cardsCounter = 1;
+      //    cards[0] = new RestaurantCardAlignment(cardsCounter);
+
+      // }
 
       frontCardAlign = defaultFrontCardAlign;
       frontCardRot = 0.0;

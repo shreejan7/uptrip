@@ -42,7 +42,8 @@ class RestaurantDetailEachGrid extends StatelessWidget {
                 ),
                 onPressed: (){
                   if(isAuth)
-                  restaurant.isfav(auth.token,auth.userId);
+                  restaurant.isfavorite(auth.token,auth.userId);
+
                   else
                     showDialog(
                       context: context,
@@ -73,7 +74,7 @@ class RestaurantDetailEachGrid extends StatelessWidget {
             ),
             trailing: IconButton(
               icon: Icon(
-                Icons.restaurant_menu,
+                Icons.restaurant,
                 color: Theme.of(context).accentColor,
               ),
               onPressed: () =>

@@ -28,7 +28,7 @@ class Order with ChangeNotifier {
   List<OrderItem> _orderRegister = [];
 
   List<OrderItem> get item {
-    return [..._orderRegister];
+    return _orderRegister;
   }
 
   Future<void> setAndFetchOrderData( String userId ) async {
@@ -50,7 +50,9 @@ class Order with ChangeNotifier {
               name: data['name'],
               price: data['price'],
               quantity: data['quantity'],
-              imgUrl: data['imgUrl']
+              imgUrl: data['imgUrl'],
+              resName: data['resName']
+
 
             ),
           ).toList(),
@@ -62,8 +64,7 @@ class Order with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addItem(List<CartItem> foodOrder, double total,String userId,) async {
-    print(userId);
+  Future<void> addItem(List<CartItem> foodOrder, double total,String userId) async {
     final url = 'https://uptrip-cef8f.firebaseio.com/order/$userId.json';
     final timestamp = DateTime.now();
     await http.post(url,
@@ -76,10 +77,14 @@ class Order with ChangeNotifier {
                     'price': value.price,
                     'quantity': value.quantity,
                     'imgUrl':value.imgUrl,
+                    'resName':value.resName,
                   })
               .toList(),
           'dateTime': timestamp.toIso8601String(),
           
         }));
+    // final url = 'https://uptrip-cef8f.firebaseio.com/Resorder/${foodOrder.}.json';
+
+    // await http.post(url,)
   }
 }

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/httperror_delete.dart';
 import '../provider/auth_restaurant.dart';
+
 class AuthRestaurantScreen extends StatelessWidget {
   static const routeName = '/auth-restaurant';
 
   @override
   Widget build(BuildContext context) {
-   
     return Scaffold(
       appBar: AppBar(),
       body: Center(child: AuthCard()),
@@ -16,23 +16,20 @@ class AuthRestaurantScreen extends StatelessWidget {
 }
 
 class AuthCard extends StatefulWidget {
-  
   AuthCard();
   @override
   _AuthCardState createState() => _AuthCardState();
 }
 
 class _AuthCardState extends State<AuthCard> {
-  
   Map<String, String> _authData = {
     'RestaurantName': '',
-    'OwnerName':'',
-    'RestaurantRegisterId':'',
-    'PhoneNumber':'',
-    'Email':'',
-    'REmail':'',
-    'password':'',
-
+    'OwnerName': '',
+    'RestaurantRegisterId': '',
+    'PhoneNumber': '',
+    'Email': '',
+    'REmail': '',
+    'password': '',
   };
   var _isLoading = false;
   final _passwordController = TextEditingController();
@@ -63,18 +60,18 @@ class _AuthCardState extends State<AuthCard> {
       _isLoading = true;
     });
     try {
-     
-        await Provider.of<AuthRestaurant>(
-          context,
-          listen: false,
-        ).signUpRestaurant(
-          _authData['RestaurantName'],
-          _authData['OwnerName'] ,
-          _authData['RestaurantRegisterId'],
-          _authData['PhoneNumber'],
-          _authData['Email'],
-          _authData['REmail'],
-          _authData['password'],);
+      await Provider.of<AuthRestaurant>(
+        context,
+        listen: false,
+      ).signUpRestaurant(
+        _authData['RestaurantName'],
+        _authData['OwnerName'],
+        _authData['RestaurantRegisterId'],
+        _authData['PhoneNumber'],
+        _authData['Email'],
+        _authData['REmail'],
+        _authData['password'],
+      );
     } on HttpError catch (error) {
       var errorMessage = 'Authentication failed';
       if (error.toString().contains('EMAIL_EXISTS')) {
@@ -88,7 +85,7 @@ class _AuthCardState extends State<AuthCard> {
       } else if (error.toString().contains('INVALID_PASSWORD')) {
         errorMessage = 'Invalid password.';
       }
-      _showErrorDialog(errorMessage); 
+      _showErrorDialog(errorMessage);
     } catch (error) {
       const errorMessage =
           'Could not authenticate you. Please try again later.';
@@ -118,52 +115,53 @@ class _AuthCardState extends State<AuthCard> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                  TextFormField(
-                      decoration: InputDecoration(labelText: 'Restaurant Name'),
-                      keyboardType: TextInputType.text,
-                      validator: (value) {
-                        if (value.isEmpty || value.length < 3) {
-                          return 'Invalid Restaurant!';
-                        }
-                      },
-                      onSaved: (value) {
-                        _authData['RestaurantName'] = value;
-                      }),
-                      TextFormField(
-                      decoration: InputDecoration(labelText: 'Owner Name'),
-                      keyboardType: TextInputType.text,
-                      validator: (value) {
-                        if (value.isEmpty || value.length < 3) {
-                          return 'Invalid Restaurant!';
-                        }
-                      },
-                      onSaved: (value) {
-                        _authData['OwnerName'] = value;
-                      }),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Restaurant register ID'),
-                    keyboardType: TextInputType.emailAddress,
+                TextFormField(
+                    decoration: InputDecoration(labelText: 'Restaurant Name'),
+                    keyboardType: TextInputType.text,
                     validator: (value) {
                       if (value.isEmpty || value.length < 3) {
-                        return 'Invalid lastName!';
+                        return 'Invalid Restaurant!';
                       }
                     },
                     onSaved: (value) {
-                      _authData['RestaurantRegisterId'] = value;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Phone Number'),
-                    keyboardType: TextInputType.number,
+                      _authData['RestaurantName'] = value;
+                    }),
+                TextFormField(
+                    decoration: InputDecoration(labelText: 'Owner Name'),
+                    keyboardType: TextInputType.text,
                     validator: (value) {
                       if (value.isEmpty || value.length < 3) {
-                        return 'Invalid lastName!';
-                      }  
+                        return 'Invalid Restaurant!';
+                      }
                     },
                     onSaved: (value) {
-                      _authData['PhoneNumber'] = value;
-                    },
-                  ),
+                      _authData['OwnerName'] = value;
+                    }),
+                TextFormField(
+                  decoration:
+                      InputDecoration(labelText: 'Restaurant register ID'),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value.isEmpty || value.length < 3) {
+                      return 'Invalid registerId!';
+                    }
+                  },
+                  onSaved: (value) {
+                    _authData['RestaurantRegisterId'] = value;
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Phone Number'),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value.isEmpty || value.length < 3) {
+                      return 'Invalid Phone Number!';
+                    }
+                  },
+                  onSaved: (value) {
+                    _authData['PhoneNumber'] = value;
+                  },
+                ),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'E-Mail'),
                   keyboardType: TextInputType.emailAddress,
@@ -177,11 +175,12 @@ class _AuthCardState extends State<AuthCard> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Restaurant E-Mail(restaurant@uptrip.com)'),
+                  decoration: InputDecoration(
+                      labelText: 'Restaurant E-Mail(restaurant@uptrip.com)'),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
-                    if (value.isEmpty || !value.contains('@')) {
-                      return 'Invalid email!';
+                    if (value.isEmpty || !value.contains('@uptrip')) {
+                      return 'Invalid restaurant email!';
                     }
                   },
                   onSaved: (value) {
@@ -201,17 +200,14 @@ class _AuthCardState extends State<AuthCard> {
                     _authData['password'] = value;
                   },
                 ),
-                  TextFormField(
-
+                TextFormField(
                     decoration: InputDecoration(labelText: 'Confirm Password'),
                     obscureText: true,
-                    validator:  (value) {
-                            if (value != _passwordController.text) {
-                              return 'Passwords do not match!';
-                            }
-                          }
-                       
-                  ),
+                    validator: (value) {
+                      if (value != _passwordController.text) {
+                        return 'Passwords do not match!';
+                      }
+                    }),
                 SizedBox(
                   height: 20,
                 ),
@@ -219,8 +215,7 @@ class _AuthCardState extends State<AuthCard> {
                   CircularProgressIndicator()
                 else
                   RaisedButton(
-                    child:
-                        Text('SIGN UP'),
+                    child: Text('SIGN UP'),
                     onPressed: _submit,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -230,28 +225,27 @@ class _AuthCardState extends State<AuthCard> {
                     color: Theme.of(context).primaryColor,
                     textColor: Theme.of(context).primaryTextTheme.button.color,
                   ),
-                  FlatButton(
-                    child: Text('NOT A RESTAURANT OWNER?'),
-                    onPressed: () => showDialog(
-                        context: context,
-                        builder: (ctx) => AlertDialog(
-                              content: Text('Sign up as user instead?'),
-                              actions: <Widget>[
-                                FlatButton(
-                                  child: Text('Yes'),
-                                  onPressed: null,
-                                ),
-                                FlatButton(
-                                  child: Text('No'),
-                                  onPressed: () => Navigator.of(context).pop(),
-                                )
-                              ],
-                            )),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    textColor: Theme.of(context).primaryColor,
-                  )
+                FlatButton(
+                  child: Text('NOT A RESTAURANT OWNER?'),
+                  onPressed: () => showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                            content: Text('Sign up as user instead?'),
+                            actions: <Widget>[
+                              FlatButton(
+                                child: Text('Yes'),
+                                onPressed: null,
+                              ),
+                              FlatButton(
+                                child: Text('No'),
+                                onPressed: () => Navigator.of(context).pop(),
+                              )
+                            ],
+                          )),
+                  padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  textColor: Theme.of(context).primaryColor,
+                )
               ],
             ),
           ),

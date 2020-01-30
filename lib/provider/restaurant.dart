@@ -30,13 +30,52 @@ class Restaurant with ChangeNotifier  {
     isFavourite = newValue;
     notifyListeners();
   }
-
-  Future<void> isfav(String token, String userId) async {
+  Future<void> isfavorite(String token, String userId) async {
     final oldStatus = isFavourite;
     isFavourite = !isFavourite;
     notifyListeners();
     final url =
-        'https://uptrip-cef8f.firebaseio.com/userFavorites/$userId/$id.json?auth=$token';
+        'https://uptrip-cef8f.firebaseio.com/userFavorites/$userId/$id.json?';
+    try {
+      final response = await http.put(
+        url,
+        body: json.encode(
+          isFavourite,
+        ),
+      );
+      if (response.statusCode >= 400) {
+        _setFavValue(oldStatus);
+      }
+    } catch (error) {
+      _setFavValue(oldStatus);
+    }
+  }
+  Future<void> isfav(String token, String userId) async {
+    final oldStatus = isFavourite;
+    isFavourite = true;
+    notifyListeners();
+    final url =
+        'https://uptrip-cef8f.firebaseio.com/userFavorites/$userId/$id.json?';
+    try {
+      final response = await http.put(
+        url,
+        body: json.encode(
+          isFavourite,
+        ),
+      );
+      if (response.statusCode >= 400) {
+        _setFavValue(oldStatus);
+      }
+    } catch (error) {
+      _setFavValue(oldStatus);
+    }
+  }
+  Future<void> notIsFav(String token, String userId) async {
+    final oldStatus = isFavourite;
+    isFavourite = false;
+    notifyListeners();
+    final url =
+        'https://uptrip-cef8f.firebaseio.com/userFavorites/$userId/$id.json?';
     try {
       final response = await http.put(
         url,

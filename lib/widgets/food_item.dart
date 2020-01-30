@@ -49,13 +49,13 @@ class FoodItem extends StatelessWidget {
           child: GridTileBar(
             backgroundColor: Colors.black26,
             leading: Consumer<Food>(
-              builder: (ctx, food, _) => IconButton(
-                icon: Icon(
+              builder: (ctx, food, _) =>IconButton(
+                icon:  Icon(
                   food.isFavourite?Icons.favorite:Icons.favorite_border,
                   color: Theme.of(context).accentColor,
                 ),
                 onPressed: () => food.isfav(),
-              ),
+              ) ,
             ),
             title: Text(
               food.name,
@@ -69,8 +69,8 @@ class FoodItem extends StatelessWidget {
                   Icons.restaurant_menu,
                   color: Theme.of(context).accentColor,
                 ),
-                onPressed: () {
-                  cart.addItem(food.id, food.name, food.price,food.imgUrl);
+                onPressed: () 
+                {if(isAuth){cart.addItem(food.id, food.name, food.price,food.imgUrl,food.restaurantId);
                       Scaffold.of(context).removeCurrentSnackBar();
                       Scaffold.of(context).showSnackBar(SnackBar(
                         content: Text('${food.name} added to cart'),
@@ -83,7 +83,10 @@ class FoodItem extends StatelessWidget {
                         ),
                       ));
                       
-                    }),
+                    }
+                    else
+                    _notAuth(context);}
+                  ),
           ),
         ),
       ),

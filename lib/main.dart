@@ -60,6 +60,7 @@ class UpTrip extends StatelessWidget {
           
           ],
           child: MaterialApp(
+            debugShowCheckedModeBanner: false,
           theme: ThemeData(
           primarySwatch: Colors.purple,
           accentColor: Colors.deepOrange,

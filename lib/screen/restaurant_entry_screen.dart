@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:provider/provider.dart';
-import '../screen/food_item_screen.dart';
 import 'package:uptrip/widgets/drawer_restaurant_owner.dart';
 import '../widgets/input_location.dart';
 import '../provider/restaurant.dart';
@@ -11,7 +10,7 @@ import '../widgets/image_input.dart';
 import 'dart:io';
 import '../provider/auth_user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import '../provider/foods.dart';
+
 
 
 class RestaurantEntryScreen extends StatefulWidget {
@@ -51,11 +50,11 @@ class _RestaurantEntryScreenState extends State<RestaurantEntryScreen> {
 
   bool check=false;
   Future<void> save() async {
-    print(_restaurant.description);
     setState(() {
       _isLoading = true;
     });
     key.currentState.save();
+    final desc=_restaurant.description;
     final restaurantData = Provider.of<Restaurants>(context,listen: false);
     final FirebaseStorage _storage =
         FirebaseStorage(storageBucket: 'gs://uptrip-cef8f.appspot.com');
@@ -77,12 +76,14 @@ class _RestaurantEntryScreenState extends State<RestaurantEntryScreen> {
         resName: _restaurant.resName,
       );
       final email= Provider.of<AuthUser>(context,listen: false).userEmail;
-      print("tis si email"+email);
+     
+
       final urlEmail = email.replaceAll(RegExp(r'[^\w\s]+'),''); 
-      restaurantData.addRestaurant(_restaurant,urlEmail,idRes).then((_){
+      restaurantData.addRestaurant(_restaurant,urlEmail,desc,idRes).then((_){
          setState(() {
            check = true;
       _isLoading = false;
+      Navigator.of(context).pushReplacementNamed("/");
     });
       });
     });
@@ -90,10 +91,12 @@ class _RestaurantEntryScreenState extends State<RestaurantEntryScreen> {
 
   final _nameFocus = FocusNode();
   final _descriptionFocus = FocusNode();
+  final _imageFocusNode = FocusNode();
 
   void dispose() {
     _nameFocus.dispose();
     _descriptionFocus.dispose();
+    _imageFocusNode.dispose();
     super.dispose();
   }
 
@@ -118,7 +121,7 @@ class _RestaurantEntryScreenState extends State<RestaurantEntryScreen> {
             resName:eachData['forRestaurant'],
             );
     
-            
+            idRes = id;
     });
 
     return Scaffold(
@@ -194,7 +197,8 @@ class _RestaurantEntryScreenState extends State<RestaurantEntryScreen> {
                       maxLines: 9,
                       focusNode: _nameFocus,
                       onFieldSubmitted: (val) {
-                        FocusScope.of(context).nextFocus();
+                        FocusScope.of(context).requestFocus(_imageFocusNode);
+                  
                       },
                       onSaved: (value) {
                         _restaurant = new Restaurant(
@@ -207,14 +211,14 @@ class _RestaurantEntryScreenState extends State<RestaurantEntryScreen> {
                           location: _restaurant.location,
                                   resName: _restaurant.resName,
 
-
                         );
                       },
                     ),
                     SizedBox(
                       height: 30,
                     ),
-                    ImageInput(_imageInput,_restaurant.imgUrl),
+                    Focus(focusNode: _imageFocusNode,
+                      child: ImageInput(_imageInput,_restaurant.imgUrl)),
                     InputLocation(inputUserLocation,),
                   ],
                 ),

@@ -126,14 +126,10 @@ Future<int> fetchAndSetFoods() async {
 
   }
   Food findById(String id) {
-    print('THid is it' +
-        _item.firstWhere((foodId) => foodId.id == id).toString());
     return _item.firstWhere((foodId) => foodId.id == id);
   }
 
   void upDateFood(String name, Food food) {
-      print(name);
-
     // final foodToUpdate = _item.indexWhere((pro) => pro.name == name);
     // if (foodToUpdate > 0) {
       final String url =

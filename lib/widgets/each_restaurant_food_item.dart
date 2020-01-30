@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../provider/foods.dart';
 import '../screen/edit_food_screen.dart';
-import '../provider/food.dart';
 
 class EachRestaurantFoodItem extends StatelessWidget {
   final String id;

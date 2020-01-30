@@ -56,7 +56,6 @@ class AllCartScreen extends StatelessWidget {
                 cart.item.values.toList()[i].quantity,
                 cart.item.keys.toList()[i],
                 cart.item.values.toList()[i].imgUrl,
-
               ),
             ),
           )

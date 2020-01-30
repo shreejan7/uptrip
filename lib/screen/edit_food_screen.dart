@@ -20,8 +20,7 @@ class _EditFoodScreenState extends State<EditFoodScreen> {
     name: '',
     description: '',
     restaurantId: '',
-    imgUrl:
-        '',
+    imgUrl: '',
     price: null,
   );
 
@@ -29,22 +28,28 @@ class _EditFoodScreenState extends State<EditFoodScreen> {
   bool isSubmit = false;
   @override
   void didChangeDependencies() {
+    setState(() {
+      isSubmit = true;
+    });
     if (forEdit) {
       final foodId = ModalRoute.of(context).settings.arguments as String;
 
       if (foodId != null) {
-        final  data = Provider.of<Foods>(context, listen: false).findById(foodId);
-          _food = new Food(
-    id: data.id,
-    name: data.name,
-    description: data.description,
-    restaurantId: data.restaurantId,
-    imgUrl:
-        data.imgUrl,
-    price: data.price,
-  );
+        final data =
+            Provider.of<Foods>(context, listen: false).findById(foodId);
+        _food = new Food(
+          id: data.id,
+          name: data.name,
+          description: data.description,
+          restaurantId: data.restaurantId,
+          imgUrl: data.imgUrl,
+          price: data.price,
+        );
       }
       forEdit = false;
+      setState(() {
+        isSubmit = false;
+      });
     }
     super.didChangeDependencies();
   }
@@ -57,7 +62,7 @@ class _EditFoodScreenState extends State<EditFoodScreen> {
     if (!isValidate) return;
     _form.currentState.save();
     final food = Provider.of<Foods>(context, listen: false);
-    print('THis is a food'+foodId.toString());
+    print('THis is a food' + foodId.toString());
     food.upDateFood(foodId, _food);
     setState(() {
       isSubmit = true;
@@ -112,8 +117,7 @@ class _EditFoodScreenState extends State<EditFoodScreen> {
                         id: _food.id,
                         restaurantId: _food.restaurantId,
                         isFavourite: _food.isFavourite,
-                        imgUrl:
-                            _food.imgUrl,
+                        imgUrl: _food.imgUrl,
                         price: _food.price,
                       ),
                     ),
@@ -139,8 +143,7 @@ class _EditFoodScreenState extends State<EditFoodScreen> {
                         id: _food.id,
                         restaurantId: _food.restaurantId,
                         isFavourite: _food.isFavourite,
-                        imgUrl:
-                            _food.imgUrl,
+                        imgUrl: _food.imgUrl,
                         price: double.parse(v),
                       ),
                     ),
@@ -158,8 +161,7 @@ class _EditFoodScreenState extends State<EditFoodScreen> {
                         isFavourite: _food.isFavourite,
                         name: _food.name,
                         description: v,
-                        imgUrl:
-                            _food.imgUrl,
+                        imgUrl: _food.imgUrl,
                         price: _food.price,
                       ),
                     ),

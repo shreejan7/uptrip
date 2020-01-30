@@ -17,11 +17,11 @@ class _OrderScreenState extends State<OrderScreen> {
   @override
   void initState() {
     super.initState();
-  final userId = Provider.of<AuthUser>(context,listen: false).userId;
+    final userId = Provider.of<AuthUser>(context, listen: false).userId;
     Provider.of<Order>(
       context,
       listen: false,
-    ).setAndFetchOrderData(userId).catchError((v){
+    ).setAndFetchOrderData(userId).catchError((v) {
       setState(() {
         _isloading = true;
       });
@@ -30,27 +30,26 @@ class _OrderScreenState extends State<OrderScreen> {
         _isloading = false;
       });
     });
-
   }
 
   @override
   Widget build(BuildContext context) {
-    final orderData = Provider.of<Order>(context,listen: false);
-    return  Scaffold(
-            drawer: DrawerApp(),
-            appBar: AppBar(
-              title: Text('All order placed'),
-            ),
-            body:_isloading
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
-        : ListView.builder(
+    final orderData = Provider.of<Order>(context, listen: false);
+    return Scaffold(
+      drawer: DrawerApp(),
+      appBar: AppBar(
+        title: Text('All order placed'),
+      ),
+      body: _isloading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ListView.builder(
               itemCount: orderData.item.length,
               itemBuilder: (ctx, i) => OrderItem(
                 orderData.item[i],
               ),
             ),
-          );
+    );
   }
 }

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../provider/restaurantData.dart';
 import '../screen/foods_of_restaurant_screen.dart';
 import '../screen/restaurant_detail_screen.dart';
+import '../provider/auth_user.dart';
 
 
 // import '../provider/foods.dart';
@@ -14,6 +15,7 @@ class RestaurantCardAlignment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final restaurant = Provider.of<RestaurantData>(context, listen: false);
     final restaurantItem = restaurant.item;
     print("This is res name "+restaurantItem[1].name.toString());
@@ -83,7 +85,7 @@ class RestaurantCardAlignment extends StatelessWidget {
               ),
               trailing: IconButton(
                 icon: Icon(
-                  Icons.restaurant_menu,
+                  Icons.restaurant,
                   color: Theme.of(context).accentColor,
                 ),
                 onPressed: () =>

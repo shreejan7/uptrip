@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/httperror_delete.dart';
@@ -80,7 +79,7 @@ class _AuthCardState extends State<AuthCard> {
         String url =
             'https://uptrip-cef8f.firebaseio.com/restaurantUsers.json?orderBy="forRestaurant"&equalTo="$userEmail"';
         var data = await http.get(url);
-        Map<String,dynamic> dataAll = json.decode(data.body);
+        Map<String, dynamic> dataAll = json.decode(data.body);
         print(dataAll);
         if (isAuth) {
           _passwordController.clear();
@@ -166,7 +165,9 @@ class _AuthCardState extends State<AuthCard> {
                 if (_authMode == AuthMode.Signup)
                   TextFormField(
                       controller: _textController,
-                      decoration: InputDecoration(labelText: 'First Name',suffixIcon: Icon(Icons.people_outline)),
+                      decoration: InputDecoration(
+                          labelText: 'First Name',
+                          suffixIcon: Icon(Icons.people_outline)),
                       keyboardType: TextInputType.emailAddress,
                       validator: (value) {
                         if (value.isEmpty || value.length < 3) {
@@ -181,7 +182,10 @@ class _AuthCardState extends State<AuthCard> {
                 if (_authMode == AuthMode.Signup)
                   TextFormField(
                     controller: _textController1,
-                    decoration: InputDecoration(labelText: 'Last Name',suffixIcon: Icon(Icons.people_outline),),
+                    decoration: InputDecoration(
+                      labelText: 'Last Name',
+                      suffixIcon: Icon(Icons.people_outline),
+                    ),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value.isEmpty || value.length < 3) {
@@ -196,7 +200,12 @@ class _AuthCardState extends State<AuthCard> {
                   ),
                 TextFormField(
                   controller: _textController2,
-                  decoration: InputDecoration(labelText: 'E-Mail',suffixIcon: Icon(Icons.mail,) , ),
+                  decoration: InputDecoration(
+                    labelText: 'E-Mail',
+                    suffixIcon: Icon(
+                      Icons.mail,
+                    ),
+                  ),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value.isEmpty || !value.contains('@')) {
@@ -209,7 +218,9 @@ class _AuthCardState extends State<AuthCard> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Password',suffixIcon: Icon(Icons.remove_red_eye)),
+                  decoration: InputDecoration(
+                      labelText: 'Password',
+                      suffixIcon: Icon(Icons.remove_red_eye)),
                   obscureText: true,
                   controller: _passwordController,
                   validator: (value) {
@@ -226,7 +237,9 @@ class _AuthCardState extends State<AuthCard> {
                   TextFormField(
                     controller: _textController3,
                     enabled: _authMode == AuthMode.Signup,
-                    decoration: InputDecoration(labelText: 'Confirm Password',suffixIcon: Icon(Icons.remove_red_eye)),
+                    decoration: InputDecoration(
+                        labelText: 'Confirm Password',
+                        suffixIcon: Icon(Icons.remove_red_eye)),
                     obscureText: true,
                     validator: _authMode == AuthMode.Signup
                         ? (value) {
@@ -244,8 +257,9 @@ class _AuthCardState extends State<AuthCard> {
                   CircularProgressIndicator()
                 else
                   RaisedButton(
-                    child:
-                        Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP',),
+                    child: Text(
+                      _authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP',
+                    ),
                     onPressed: _submit,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),

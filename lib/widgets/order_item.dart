@@ -42,18 +42,19 @@ class _OrderItemState extends State<OrderItem> {
             ),
             if (_expand)
               Container(
-                height: min(widget.order.foodOrder.length * 20.0 + 100, 180),
+                height: min(widget.order.foodOrder.length * 20.0 + 200, 280),
                 child: ListView.builder(
                   padding: EdgeInsets.all(8),
                   itemCount: widget.order.foodOrder.length,
-                  itemBuilder: (ctx, i) => Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  itemBuilder: (ctx, i) => Column (
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       CircleAvatar(
                         radius: 40,
                         backgroundImage:
                             NetworkImage(widget.order.foodOrder[i].imgUrl),
                       ),
+                      SizedBox(height: 10,),
                       Text(
                         widget.order.foodOrder[i].name,
                         style: TextStyle(
@@ -62,6 +63,8 @@ class _OrderItemState extends State<OrderItem> {
                           fontSize: 23,
                         ),
                       ),
+                      SizedBox(height: 10,),
+
                       Text(
                         widget.order.foodOrder[i].quantity.toString() +
                             '   x   ' +

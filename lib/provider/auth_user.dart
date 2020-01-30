@@ -37,7 +37,7 @@ class AuthUser with ChangeNotifier {
       ));
       if (method == 'signUp') {
         String url1 =
-            'https://uptrip-cef8f.firebaseio.com/users/$email.json?auth=$_token';
+            'https://uptrip-cef8f.firebaseio.com/users/$email.json?';
         await http.post(url1,
             body: json.encode({
               'firstName': fName,

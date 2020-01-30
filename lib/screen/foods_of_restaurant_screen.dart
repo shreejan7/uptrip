@@ -12,12 +12,11 @@ class FoodsOfRestaurantScreen extends StatefulWidget {
   static const routeName = '/foods-detail';
 
   @override
-  _FoodsOfRestaurantScreenState createState() => _FoodsOfRestaurantScreenState();
+  _FoodsOfRestaurantScreenState createState() =>
+      _FoodsOfRestaurantScreenState();
 }
 
 class _FoodsOfRestaurantScreenState extends State<FoodsOfRestaurantScreen> {
-   
-  
   @override
   Widget build(BuildContext context) {
     Restaurant restaurant = ModalRoute.of(context).settings.arguments;
@@ -43,29 +42,28 @@ class _FoodsOfRestaurantScreenState extends State<FoodsOfRestaurantScreen> {
         ],
       ),
       body: FutureBuilder(
-        future: Provider.of<Foods>(
-          context,
-          listen: false,
-        ).fetchAndSetFoodsData(restaurant.resName),
-        builder: (ctx, dataSnapshot) {
-          if (dataSnapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            if (dataSnapshot.error != null) {
-              print(dataSnapshot.error.toString());
+          future: Provider.of<Foods>(
+            context,
+            listen: false,
+          ).fetchAndSetFoodsData(restaurant.resName),
+          builder: (ctx, dataSnapshot) {
+            if (dataSnapshot.connectionState == ConnectionState.waiting) {
               return Center(
-                child: Text("There is some error"),
+                child: CircularProgressIndicator(),
               );
-            } else
-            
-              return 
-              // RefreshIndicator(
-              //   onRefresh: ()=>
-              //   refresh(context),
-                // child:
-                 Consumer<Foods>(
+            } else {
+              if (dataSnapshot.error != null) {
+                print(dataSnapshot.error.toString());
+                return Center(
+                  child: Text("There is some error"),
+                );
+              } else
+                return
+                    // RefreshIndicator(
+                    //   onRefresh: ()=>
+                    //   refresh(context),
+                    // child:
+                    Consumer<Foods>(
                   builder: (ctx, foodItem, child) => GridView.builder(
                     itemCount: foodItem.item.length,
                     itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
@@ -80,10 +78,8 @@ class _FoodsOfRestaurantScreenState extends State<FoodsOfRestaurantScreen> {
                     ),
                   ),
                 );
-          }
-        }
-      ),
-      
+            }
+          }),
     );
   }
 }

@@ -50,20 +50,24 @@ class CartItem extends StatelessWidget {
               ),
               Text((price * quantity).toString()),
               Center(
-                child: Row(
-                  children: <Widget>[
-                    IconButton(
-                      padding: EdgeInsetsDirectional.only(bottom: 15),
-                      onPressed: () => cart.removeQuantity(foodId),
-                      icon: Icon(Icons.minimize),
-                    ),
-                    Text("${(quantity)} x"),
-                    IconButton(
-                      padding: EdgeInsetsDirectional.only(bottom: 0),
-                      onPressed: () => cart.addQuantity(foodId),
-                      icon: Icon(Icons.add),
-                    ),
-                  ],
+                child: Container(
+                  margin:EdgeInsets.only(left:MediaQuery.of(context).size.width * 0.3 ) ,
+                  child: Row(
+                    
+                    children: <Widget>[
+                      IconButton(
+                        padding: EdgeInsetsDirectional.only(bottom: 15),
+                        onPressed: () => cart.removeQuantity(foodId),
+                        icon: Icon(Icons.minimize),
+                      ),
+                      Text("${(quantity)} x"),
+                      IconButton(
+                        padding: EdgeInsetsDirectional.only(bottom: 0),
+                        onPressed: () => cart.addQuantity(foodId),
+                        icon: Icon(Icons.add),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

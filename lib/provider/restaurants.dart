@@ -13,7 +13,8 @@ class Restaurants with ChangeNotifier {
   
 
   Future<void> addRestaurant(
-      Restaurant restaurantData, String userEmail,String idRes) async {
+      Restaurant restaurantData, String userEmail,String desc,String idRes) async {
+        print(idRes);
     final address = await Location().getLocation();
     Coordinates coordinate =
         new Coordinates(address.latitude, address.longitude);
@@ -28,11 +29,12 @@ class Restaurants with ChangeNotifier {
     print(restaurantData.name);
     String url ;
     print(userEmail.toString());
+    print("THi is  restaurant des"+ restaurantData.description);
      url = 'https://uptrip-cef8f.firebaseio.com/restaurantUsers/$idRes.json?';
     http.patch(url,body: json.encode(
                   {
                     'restaurantName': restaurantData.name,
-                    'description': restaurantData.description,
+                    'description': desc,
                     'locationLatitude': restaurantData.locationLatitude,
                     'locationLongitude': restaurantData.locationLongitude,
                     'imgUrl': restaurantData.imgUrl,
@@ -40,6 +42,7 @@ class Restaurants with ChangeNotifier {
                     'location': addresses.first.addressLine,
                     'time':DateTime.now().toString(),
                     'filterLocation':filter,
+                    'searchName':restaurantData.name.toLowerCase(),
                   },)).then((v){
                     print(json.decode(v.body));
                   });
@@ -119,6 +122,6 @@ class Restaurants with ChangeNotifier {
     //   throw error;
     // });
   }
-
+  
   
 }

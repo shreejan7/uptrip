@@ -11,51 +11,60 @@ class FoodItemScreen extends StatefulWidget {
   @override
   _FoodItemScreenState createState() => _FoodItemScreenState();
 }
+
 bool isloading = false;
+
 class _FoodItemScreenState extends State<FoodItemScreen> {
-  Future<void> _refresh(BuildContext context) async{
+  Future<void> _refresh(BuildContext context) async {
     setState(() {
       isloading = true;
     });
-    await Provider.of<Foods>(context,listen: false).fetchAndSetFoods().then((v){
+    await Provider.of<Foods>(context, listen: false)
+        .fetchAndSetFoods()
+        .then((v) {
       print(v);
-      if(v == 1){
-               setState(() {
-      isloading = false;
-    });
+      if (v == 1) {
+        setState(() {
+          isloading = false;
+        });
       }
-
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final restaurantId = ModalRoute.of(context).settings.arguments as Restaurant;
+    final restaurantId =
+        ModalRoute.of(context).settings.arguments as Restaurant;
     final foodData = Provider.of<Foods>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Users food'),
         actions: <Widget>[
           IconButton(
-            onPressed:()=> Navigator.of(context).pushNamed(AddFoodScreen.routeName,arguments: restaurantId),
+            onPressed: () => Navigator.of(context)
+                .pushNamed(AddFoodScreen.routeName, arguments: restaurantId),
             icon: Icon(Icons.add),
           )
         ],
       ),
-      body:isloading?Center(child: Text('fetcing data'),) :RefreshIndicator(
-            onRefresh:()=> _refresh(context),
+      body: isloading
+          ? Center(
+              child: Text('fetcing data'),
+            )
+          : RefreshIndicator(
+              onRefresh: () => _refresh(context),
               child: Padding(
-          padding: EdgeInsets.all(8),
-          child: ListView.builder(
-            itemCount: foodData.item.length,
-            itemBuilder: (_, i) => EachRestaurantFoodItem(
-              foodData.item[i].name,
-              foodData.item[i].imgUrl,
-              foodData.item[i].id,
+                padding: EdgeInsets.all(8),
+                child: ListView.builder(
+                  itemCount: foodData.item.length,
+                  itemBuilder: (_, i) => EachRestaurantFoodItem(
+                    foodData.item[i].name,
+                    foodData.item[i].imgUrl,
+                    foodData.item[i].id,
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }
